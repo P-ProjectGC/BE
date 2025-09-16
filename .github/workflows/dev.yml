@@ -1,0 +1,69 @@
+name: Build & Deploy (Dev)
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Gradle build
+        run: ./gradlew clean bootJar -x test
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER_NAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push (linux/amd64)
+        run: |
+          docker buildx create --use --name plango || true
+          docker buildx build \
+            --platform linux/amd64 \
+            -t ${{ secrets.DOCKER_USER_NAME }}/plango-app:dev \
+            -f Dockerfile-dev \
+            --push .
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+    steps:
+      - name: Deploy on EC2 (single container)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_EC2_USER }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            echo "== pull new image =="
+            docker pull ${{ secrets.DOCKER_USER_NAME }}/plango-app:dev
+            echo "== restart container =="
+            docker rm -f plango-app || true
+            docker run -d --name plango-app \
+              --restart unless-stopped \
+              --network app-net \
+              --env-file /opt/app/.env \
+              -p 8080:8080 \
+              ${{ secrets.DOCKER_USER_NAME }}/plango-app:dev
+            echo "== health check =="
+            for i in {1..10}; do
+              if curl -fsS http://localhost:8080/actuator/health | grep -q '"status":"UP"'; then
+                echo "UP"; exit 0
+              fi
+              sleep 5
+            done
+            echo "Health check failed"; docker logs --tail=200 plango-app; exit 1
