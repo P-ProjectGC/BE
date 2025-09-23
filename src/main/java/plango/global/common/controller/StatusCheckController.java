@@ -1,4 +1,4 @@
-package com.example.plango.global.common.controller;
+package plango.global.common.controller;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.ResponseEntity;

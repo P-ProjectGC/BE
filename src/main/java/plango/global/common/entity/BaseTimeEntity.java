@@ -1,4 +1,4 @@
-package com.example.plango.global.common.entity;
+package plango.global.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

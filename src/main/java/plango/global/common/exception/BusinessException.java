@@ -1,4 +1,4 @@
-package com.example.plango.global.common.exception;
+package plango.global.common.exception;
 
 import lombok.Getter;
 

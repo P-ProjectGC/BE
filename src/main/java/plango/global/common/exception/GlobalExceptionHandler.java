@@ -1,8 +1,8 @@
-package com.example.plango.global.common.exception;
+package plango.global.common.exception;
 
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.example.plango.global.common.response.CommonResponse; // ← PlanGo 공통응답 경로로 변경
+import plango.global.common.response.CommonResponse; // ← PlanGo 공통응답 경로로 변경
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

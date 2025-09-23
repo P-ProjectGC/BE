@@ -1,4 +1,4 @@
-package com.example.plango.global.common.response;
+package plango.global.common.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
