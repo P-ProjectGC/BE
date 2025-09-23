@@ -1,0 +1,22 @@
+# src/main/resources/application.yml
+spring:
+  application:
+    name: plango
+  profiles:
+    active: local      # 기본은 local로 실행
+  jackson:
+    time-zone: Asia/Seoul
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+
+server:
+  port: 8080
+  forward-headers-strategy: native   # Nginx 리버스프록시 뒤에 둘 때 권장
