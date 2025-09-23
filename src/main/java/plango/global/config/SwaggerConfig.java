@@ -15,7 +15,7 @@ public class SwaggerConfig {
                 .components(new Components())
                 .info(new Info()
                         .title("PlanGo API")
-                        .description("PlanGo 여행 일정/방/회원 API 문서")
+                        .description("PlanGo API 문서입니다.")
                         .version("v1.0.0"));
     }
 }
