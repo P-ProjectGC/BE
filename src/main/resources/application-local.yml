@@ -1,0 +1,49 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USER}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD}}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+# --- 여긴 spring 밖(최상위) ---
+jwt:
+  key: ${JWT_KEY}
+  access:
+    expiration: ${ACCESS_EXP:900000}
+  refresh:
+    expiration: ${REFRESH_EXP:1209600000}
+    reissue-threshold: ${REFRESH_REISSUE_THRESHOLD:259200000}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET:}
+    credentials:
+      access-key: ${S3_ACCESS_KEY:}
+      secret-key: ${S3_SECRET_KEY:}
+    region:
+      static: ${S3_REGION:ap-southeast-2}
+      auto: false
+    stack:
+      auto: false
+
+security:
+  aes:
+    key: ${AES_KEY:}
+
+preview:
+  api:
+    url: ${PREVIEW_API_URL:http://localhost:3000}
