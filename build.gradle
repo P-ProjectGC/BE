@@ -46,7 +46,10 @@ dependencies {
 	// DB Driver (MySQL 사용 시)
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-	// Test
+	// AWS SDK v2 BOM
+	implementation platform("software.amazon.awssdk:bom:2.25.68")
+	// S3 클라이언트
+	implementation "software.amazon.awssdk:s3"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
