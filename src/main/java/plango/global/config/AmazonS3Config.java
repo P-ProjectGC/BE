@@ -1,4 +1,4 @@
-package plango.global.config; // ← 실제 루트 패키지에 맞게 수정
+package plango.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +11,16 @@ public class AmazonS3Config {
 
     @Bean
     public S3Client s3Client() {
+        // 1) .env에 있는 S3_REGION 우선 사용
+        String region = System.getenv("S3_REGION");
+
+        // 2) 없으면 기본값(네 dev 버킷 리전)으로 세팅
+        if (region == null || region.isBlank()) {
+            region = "ap-southeast-2"; // dev 기본 리전
+        }
+
         return S3Client.builder()
-                .region(Region.of(System.getenv("AWS_REGION")))
+                .region(Region.of(region))
                 .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                 .build();
     }
