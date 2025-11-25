@@ -25,3 +25,10 @@ springdoc:
 server:
   port: ${SERVER_PORT:8080}
   forward-headers-strategy: native
+
+cloud:
+  aws:
+    region: ${AWS_REGION}
+
+s3:
+  bucket: ${S3_BUCKET}
