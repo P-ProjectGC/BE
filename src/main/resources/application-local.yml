@@ -4,33 +4,26 @@ spring:
       on-profile: local
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:${DB_URL}}
-    username: ${SPRING_DATASOURCE_USERNAME:${DB_USER}}
-    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD}}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/plango_local?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root            # 👉 네 로컬 MySQL 계정
+    password: root            # 👉 네 로컬 MySQL 비밀번호
 
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update        # 개발용이라 update로 두면 테이블 자동 생성
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.MySQL8Dialect   # 👉 Dialect 직접 지정
         format_sql: true
+        default_batch_fetch_size: 100
 
-# --- 여긴 spring 밖(최상위) ---
-jwt:
-  key: ${JWT_KEY}
-  access:
-    expiration: ${ACCESS_EXP:900000}
-  refresh:
-    expiration: ${REFRESH_EXP:1209600000}
-    reissue-threshold: ${REFRESH_REISSUE_THRESHOLD:259200000}
+  flyway:
+    enabled: false            # 로컬 테스트에선 일단 꺼두자
 
 cloud:
   aws:
-    s3:
-      bucket: ${S3_BUCKET:}
     credentials:
       access-key: ${S3_ACCESS_KEY:}
       secret-key: ${S3_SECRET_KEY:}
@@ -47,3 +40,11 @@ security:
 preview:
   api:
     url: ${PREVIEW_API_URL:http://localhost:3000}
+
+jwt:
+  key: "this-is-local-jwt-secret-key-please-change-1234567890"  # 로컬용 임의 시크릿 (32자 이상)
+  access:
+    expiration: 3600000        # 액세스 토큰 유효기간 (ms 단위, 예: 1시간 = 60 * 60 * 1000)
+  refresh:
+    expiration: 1209600000     # 리프레시 토큰 유효기간 (ms, 예: 14일 = 14 * 24 * 60 * 60 * 1000)
+

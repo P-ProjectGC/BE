@@ -1,0 +1,15 @@
+package plango.application.dto.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class LoginResponse {
+
+    private Long userId;
+    private String nickname;
+    private String profileImageUrl;
+    private String accessToken;
+    private String refreshToken;
+}
