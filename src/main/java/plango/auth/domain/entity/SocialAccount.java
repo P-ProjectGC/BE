@@ -1,4 +1,4 @@
-package plango.domain.entity;
+package plango.auth.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import plango.member.domain.entity.Member;
 import plango.global.common.entity.BaseTimeEntity;
 
 @Getter

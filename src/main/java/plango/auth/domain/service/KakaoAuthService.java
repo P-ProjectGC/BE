@@ -1,4 +1,4 @@
-package plango.domain.service;
+package plango.auth.domain.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import plango.application.dto.response.KakaoLoginResponse;
-import plango.domain.entity.Member;
-import plango.domain.entity.SocialAccount;
-import plango.domain.repository.MemberRepository;
-import plango.domain.repository.SocialAccountRepository;
+import plango.auth.application.dto.response.KakaoLoginResponse;
+import plango.member.domain.entity.Member;
+import plango.auth.domain.entity.SocialAccount;
+import plango.member.domain.repository.MemberRepository;
+import plango.auth.domain.repository.SocialAccountRepository;
 import plango.global.common.exception.BusinessException;
 import plango.global.common.exception.ErrorCode;
 

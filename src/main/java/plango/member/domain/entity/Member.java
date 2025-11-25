@@ -1,4 +1,4 @@
-package plango.domain.entity;
+package plango.member.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,10 +1,10 @@
-package plango.application.usecase;
+package plango.auth.application.usecase;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import plango.application.dto.request.KakaoLoginRequest;
-import plango.application.dto.response.KakaoLoginResponse;
-import plango.domain.service.KakaoAuthService;
+import plango.auth.application.dto.request.KakaoLoginRequest;
+import plango.auth.application.dto.response.KakaoLoginResponse;
+import plango.auth.domain.service.KakaoAuthService;
 
 @Component
 @RequiredArgsConstructor

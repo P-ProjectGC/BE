@@ -1,11 +1,11 @@
-package plango.presentation;
+package plango.file.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import plango.application.usecase.FileUploadUseCase;
+import plango.file.application.usecase.FileUploadUseCase;
 
 @RestController
 @RequiredArgsConstructor

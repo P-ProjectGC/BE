@@ -1,4 +1,4 @@
-package plango.presentation;
+package plango.auth.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import plango.application.dto.request.KakaoLoginRequest;
-import plango.application.dto.response.KakaoLoginResponse;
-import plango.application.usecase.KakaoLoginUseCase;
+import plango.auth.application.dto.request.KakaoLoginRequest;
+import plango.auth.application.dto.response.KakaoLoginResponse;
+import plango.auth.application.usecase.KakaoLoginUseCase;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
 

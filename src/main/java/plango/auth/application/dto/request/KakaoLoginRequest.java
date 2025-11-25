@@ -1,4 +1,4 @@
-package plango.application.dto.request;
+package plango.auth.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

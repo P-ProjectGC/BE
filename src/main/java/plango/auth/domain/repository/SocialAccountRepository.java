@@ -1,8 +1,8 @@
-package plango.domain.repository;
+package plango.auth.domain.repository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import plango.domain.entity.SocialAccount;
+import plango.auth.domain.entity.SocialAccount;
 
 public interface SocialAccountRepository extends JpaRepository<SocialAccount, Long> {
 

@@ -1,4 +1,4 @@
-package plango.application.dto.response;
+package plango.auth.application.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
