@@ -3,6 +3,7 @@ package plango.file.domain.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -16,8 +17,10 @@ public class FileUploadService {
 
     private final S3Client s3Client;
 
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
     public String upload(MultipartFile file) throws IOException {
-        String bucket = System.getenv("S3_BUCKET");
 
         // 파일명 충돌 방지 + 폴더 구조
         String key = "uploads/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
