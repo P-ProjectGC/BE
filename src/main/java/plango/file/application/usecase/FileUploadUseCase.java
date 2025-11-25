@@ -1,9 +1,9 @@
-package plango.application.usecase;
+package plango.file.application.usecase;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import plango.domain.service.FileUploadService;
+import plango.file.domain.service.FileUploadService;
 
 @Component
 @RequiredArgsConstructor

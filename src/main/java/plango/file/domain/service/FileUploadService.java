@@ -1,4 +1,4 @@
-package plango.domain.service;
+package plango.file.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
