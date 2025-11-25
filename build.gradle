@@ -43,6 +43,10 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	//Flyway
+	implementation 'org.flywaydb:flyway-core'
+	runtimeOnly 'org.flywaydb:flyway-mysql'
+
 	// DB Driver (MySQL 사용 시)
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
