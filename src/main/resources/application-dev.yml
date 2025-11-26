@@ -48,13 +48,13 @@ security:
   aes:
     key: ${AES_KEY:}
 
-preview:
-  api:
-    url: ${PREVIEW_API_URL:http://localhost:3000}
+  preview:
+    api:
+      url: ${PREVIEW_API_URL}
 
-kakao:
-  client-id: "6ecbd75cc6c1f3a8819f66e5698ee294"
-  client-secret: ""
-  redirect-uri: "http://ceprj2.gachon.ac.kr:65028/login/oauth2/code/kakao"
+  oauth2:
+    kakao:
+      client-id: ${KAKAO_CLIENT_ID:}
+      redirect-uri: ${KAKAO_REDIRECT_URI:}
 
 

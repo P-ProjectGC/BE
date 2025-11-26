@@ -5,18 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KakaoUserInfo {
+public record KakaoUserInfoResponse(
 
-    /**
-     * 카카오 유저 고유 ID
-     */
-    private Long id;
+        Long id,
 
-    @JsonProperty("kakao_account")
-    private KakaoAccount kakaoAccount;
+        @JsonProperty("kakao_account")
+        KakaoAccount kakaoAccount
+
+) {
 
     @Getter
     @NoArgsConstructor
@@ -24,6 +21,8 @@ public class KakaoUserInfo {
     public static class KakaoAccount {
 
         private String email;
+
+        @JsonProperty("profile")
         private Profile profile;
     }
 
@@ -38,7 +37,10 @@ public class KakaoUserInfo {
         private String profileImageUrl;
     }
 
-    // 편의 메서드들
+    public Long getId() {
+        return id;
+    }
+
     public String getEmail() {
         return kakaoAccount != null ? kakaoAccount.getEmail() : null;
     }

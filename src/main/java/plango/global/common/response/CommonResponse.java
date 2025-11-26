@@ -5,12 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 모든 API 응답을 감싸는 공통 응답 객체
- *  - code    : 비즈니스/HTTP 코드
- *  - message : 응답 메시지
- *  - data    : 실제 응답 데이터
- */
 @Getter
 @Builder
 @NoArgsConstructor
@@ -21,11 +15,8 @@ public class CommonResponse<T> {
     private String message;
     private T data;
 
-    // =======================
-    // 성공 응답
-    // =======================
 
-    /** ResponseMessage 기반 성공 응답 */
+    /** 공통 ResponseMessage 기반 성공 응답 */
     public static <T> CommonResponse<T> success(ResponseMessage message, T data) {
         return CommonResponse.<T>builder()
                 .code(message.getCode())
@@ -43,11 +34,17 @@ public class CommonResponse<T> {
                 .build();
     }
 
-    // =======================
-    // 실패 응답 (기존 + createFailure 추가)
-    // =======================
+    /** ResponseMessage 기반 성공 응답 (기존 createSuccess 호출 호환용) */
+    public static <T> CommonResponse<T> createSuccess(ResponseMessage message, T data) {
+        return success(message, data);
+    }
 
-    /** 간단 실패 응답 (code + message, data 는 null) */
+    /** 문자열 메시지 기반 성공 응답 (기존 createSuccess 호출 호환용) */
+    public static <T> CommonResponse<T> createSuccess(String message, T data) {
+        return success(message, data);
+    }
+
+    /** ResponseMessage 기반 실패 응답 (data 는 null) */
     public static <T> CommonResponse<T> fail(ResponseMessage message) {
         return CommonResponse.<T>builder()
                 .code(message.getCode())
@@ -56,8 +53,8 @@ public class CommonResponse<T> {
                 .build();
     }
 
-    /** GlobalExceptionHandler 에서 사용하는 실패 응답 (data 없음) */
-    public static <T> CommonResponse<T> createFailure(int code, String message) {
+    /** 코드 + 메시지 기반 실패 응답 (data 없음, GlobalExceptionHandler 등에서 사용) */
+    public static <T> CommonResponse<T> fail(int code, String message) {
         return CommonResponse.<T>builder()
                 .code(code)
                 .message(message)
@@ -65,8 +62,8 @@ public class CommonResponse<T> {
                 .build();
     }
 
-    /** GlobalExceptionHandler 에서 사용하는 실패 응답 (data 포함) */
-    public static <T> CommonResponse<T> createFailure(int code, String message, T data) {
+    /** 코드 + 메시지 + data 기반 실패 응답 */
+    public static <T> CommonResponse<T> fail(int code, String message, T data) {
         return CommonResponse.<T>builder()
                 .code(code)
                 .message(message)

@@ -1,6 +1,14 @@
 package plango.auth.domain.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,16 +25,9 @@ public class SocialAccount extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * 소셜 로그인 제공자 (예: KAKAO, GOOGLE 등)
-     */
-    @Column(nullable = false, length = 20)
+    @Column(name = "provider", nullable = false, length = 20)
     private String provider;
 
-    /**
-     * 제공자 쪽의 고유 사용자 ID
-     *  - DB 컬럼명: provider_uid
-     */
     @Column(name = "provider_uid", nullable = false, length = 100)
     private String providerUserId;
 

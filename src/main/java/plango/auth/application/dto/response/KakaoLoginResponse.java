@@ -1,10 +1,8 @@
 package plango.auth.application.dto.response;
 
-import plango.member.domain.entity.Member;
+import lombok.Builder;
 
-/**
- * 카카오 로그인 응답 DTO
- */
+@Builder
 public record KakaoLoginResponse(
         Long memberId,
         String email,
@@ -12,14 +10,4 @@ public record KakaoLoginResponse(
         String profileImageUrl,
         boolean newMember
 ) {
-
-    public static KakaoLoginResponse of(Member member, boolean newMember) {
-        return new KakaoLoginResponse(
-                member.getId(),
-                member.getEmail(),
-                member.getNickname(),
-                member.getProfileImageUrl(),
-                newMember
-        );
-    }
 }

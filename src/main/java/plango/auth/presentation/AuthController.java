@@ -23,7 +23,7 @@ public class AuthController {
     ) {
         KakaoLoginResponse response = kakaoLoginUseCase.execute(request);
         return ResponseEntity.ok(
-                CommonResponse.success(ResponseMessage.KAKAO_LOGIN_SUCCESS, response)
+                CommonResponse.success(ResponseMessage.SUCCESS, response)
         );
     }
 }
