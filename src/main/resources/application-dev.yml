@@ -51,3 +51,9 @@ security:
 preview:
   api:
     url: ${PREVIEW_API_URL:http://localhost:3000}
+
+kakao:
+  client-id: "6ecbd75cc6c1f3a8819f66e5698ee294"
+  client-secret: ""
+  redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
+

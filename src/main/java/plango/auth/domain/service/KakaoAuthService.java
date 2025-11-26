@@ -1,152 +1,92 @@
 package plango.auth.domain.service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import plango.auth.application.dto.response.KakaoLoginResponse;
-import plango.member.domain.entity.Member;
-import plango.auth.domain.entity.SocialAccount;
-import plango.member.domain.repository.MemberRepository;
-import plango.auth.domain.repository.SocialAccountRepository;
-import plango.global.common.exception.BusinessException;
-import plango.global.common.exception.ErrorCode;
+import plango.auth.application.dto.response.KakaoTokenResponse;
+import plango.auth.application.dto.response.KakaoUserInfo;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoAuthService {
 
-    private static final String KAKAO_PROVIDER = "KAKAO";
-    private static final String KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
-
     private final RestTemplate restTemplate;
-    private final MemberRepository memberRepository;
-    private final SocialAccountRepository socialAccountRepository;
 
-    public KakaoLoginResponse login(String accessToken) {
-        KakaoUserResponse kakaoUserResponse = requestKakaoUser(accessToken);
+    @Value("${kakao.client-id}")
+    private String clientId;
 
-        Long kakaoId = kakaoUserResponse.getId();
-        KakaoUserResponse.KakaoAccount account = kakaoUserResponse.getKakaoAccount();
+    @Value("${kakao.client-secret:}")
+    private String clientSecret;
 
-        String email = account != null ? account.getEmail() : null;
-        String nickname = account != null && account.getProfile() != null
-                ? account.getProfile().getNickname()
-                : "카카오사용자";
-        String profileImageUrl = account != null && account.getProfile() != null
-                ? account.getProfile().getProfileImageUrl()
-                : null;
+    @Value("${kakao.redirect-uri}")
+    private String redirectUri;
 
-        String providerUid = String.valueOf(kakaoId);
+    private static final String TOKEN_URL = "https://kauth.kakao.com/oauth/token";
+    private static final String USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
 
-        SocialAccount socialAccount = socialAccountRepository
-                .findByProviderAndProviderUid(KAKAO_PROVIDER, providerUid)
-                .orElseGet(() -> createMemberAndSocialAccount(providerUid, email, nickname, profileImageUrl));
+    /**
+     * 인가 코드로 카카오 access token 발급 후, 해당 토큰으로 유저 정보 조회
+     */
+    public KakaoUserInfo getUserInfoByAuthorizationCode(String authorizationCode) {
+        KakaoTokenResponse tokenResponse = fetchAccessToken(authorizationCode);
 
-        Member member = socialAccount.getMember();
+        String accessToken = tokenResponse.getAccessToken();
+        if (accessToken == null || accessToken.isBlank()) {
+            throw new IllegalStateException("카카오 access token 발급에 실패했습니다.");
+        }
 
-        return KakaoLoginResponse.builder()
-                .memberId(member.getId())
-                .email(member.getEmail())
-                .nickname(member.getNickname())
-                .profileImageUrl(member.getProfileImageUrl())
-                .build();
+        return fetchUserInfo(accessToken);
     }
 
-    private KakaoUserResponse requestKakaoUser(String accessToken) {
+    private KakaoTokenResponse fetchAccessToken(String authorizationCode) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", clientId);
+        params.add("redirect_uri", redirectUri);
+        params.add("code", authorizationCode);
+        if (clientSecret != null && !clientSecret.isBlank()) {
+            params.add("client_secret", clientSecret);
+        }
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+        ResponseEntity<KakaoTokenResponse> response =
+                restTemplate.postForEntity(TOKEN_URL, request, KakaoTokenResponse.class);
+
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            log.warn("카카오 토큰 발급 실패. status={}, body={}",
+                    response.getStatusCode(), response.getBody());
+            throw new IllegalStateException("카카오 토큰 발급 요청에 실패했습니다.");
+        }
+
+        return response.getBody();
+    }
+
+    private KakaoUserInfo fetchUserInfo(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
 
-        try {
-            ResponseEntity<KakaoUserResponse> response = restTemplate.exchange(
-                    KAKAO_USER_INFO_URL,
-                    HttpMethod.GET,
-                    entity,
-                    KakaoUserResponse.class
-            );
+        ResponseEntity<KakaoUserInfo> response =
+                restTemplate.postForEntity(USER_INFO_URL, request, KakaoUserInfo.class);
 
-            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-                throw new BusinessException(
-                        ErrorCode.KAKAO_INVALID_TOKEN.getStatusCode(),
-                        ErrorCode.KAKAO_INVALID_TOKEN.getMessage()
-                );
-            }
-
-            return response.getBody();
-        } catch (HttpClientErrorException e) {
-            throw new BusinessException(
-                    ErrorCode.KAKAO_INVALID_TOKEN.getStatusCode(),
-                    ErrorCode.KAKAO_INVALID_TOKEN.getMessage()
-            );
-        } catch (RestClientException e) {
-            throw new BusinessException(
-                    ErrorCode.KAKAO_SERVER_ERROR.getStatusCode(),
-                    ErrorCode.KAKAO_SERVER_ERROR.getMessage()
-            );
-        }
-    }
-
-    private SocialAccount createMemberAndSocialAccount(
-            String providerUid,
-            String email,
-            String nickname,
-            String profileImageUrl
-    ) {
-        Member member = Member.builder()
-                .email(email)
-                .password(null)
-                .nickname(nickname)
-                .profileImageUrl(profileImageUrl)
-                .build();
-
-        Member savedMember = memberRepository.save(member);
-
-        SocialAccount socialAccount = SocialAccount.builder()
-                .provider(KAKAO_PROVIDER)
-                .providerUid(providerUid)
-                .member(savedMember)
-                .build();
-
-        return socialAccountRepository.save(socialAccount);
-    }
-
-    @Getter
-    @Setter
-    private static class KakaoUserResponse {
-
-        private Long id;
-
-        @JsonProperty("kakao_account")
-        private KakaoAccount kakaoAccount;
-
-        @Getter
-        @Setter
-        private static class KakaoAccount {
-
-            private String email;
-            private Profile profile;
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            log.warn("카카오 사용자 정보 조회 실패. status={}, body={}",
+                    response.getStatusCode(), response.getBody());
+            throw new IllegalStateException("카카오 사용자 정보 조회에 실패했습니다.");
         }
 
-        @Getter
-        @Setter
-        private static class Profile {
-
-            private String nickname;
-
-            @JsonProperty("profile_image_url")
-            private String profileImageUrl;
-        }
+        return response.getBody();
     }
 }

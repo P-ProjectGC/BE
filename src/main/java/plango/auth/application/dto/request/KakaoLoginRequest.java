@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KakaoLoginRequest {
 
-    @NotBlank(message = "카카오 액세스 토큰은 필수입니다.")
-    private String accessToken;
+    /**
+     * 카카오 로그인 인가 코드 (authorization_code)
+     * 프론트(또는 Swagger)에서 전달받는 값
+     */
+    @NotBlank(message = "카카오 인가 코드는 필수입니다.")
+    private String authorizationCode;
 }
