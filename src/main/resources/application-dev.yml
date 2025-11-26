@@ -55,5 +55,6 @@ preview:
 kakao:
   client-id: "6ecbd75cc6c1f3a8819f66e5698ee294"
   client-secret: ""
-  redirect-uri: "http://ceprj2.gachon.ac.kr:8080/login/oauth2/code/kakao"
+  redirect-uri: "http://ceprj2.gachon.ac.kr:65028/login/oauth2/code/kakao"
+
 
