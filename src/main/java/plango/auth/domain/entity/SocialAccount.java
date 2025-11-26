@@ -9,6 +9,7 @@ import plango.member.domain.entity.Member;
 
 @Getter
 @Entity
+@Table(name = "social_account")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SocialAccount extends BaseTimeEntity {
 
@@ -23,9 +24,10 @@ public class SocialAccount extends BaseTimeEntity {
     private String provider;
 
     /**
-     * 제공자 쪽의 고유 사용자 ID (예: 카카오 id)
+     * 제공자 쪽의 고유 사용자 ID
+     *  - DB 컬럼명: provider_uid
      */
-    @Column(nullable = false, length = 100)
+    @Column(name = "provider_uid", nullable = false, length = 100)
     private String providerUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
