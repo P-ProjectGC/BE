@@ -15,7 +15,6 @@ public class CommonResponse<T> {
     private String message;
     private T data;
 
-
     /** 공통 ResponseMessage 기반 성공 응답 */
     public static <T> CommonResponse<T> success(ResponseMessage message, T data) {
         return CommonResponse.<T>builder()
@@ -69,5 +68,15 @@ public class CommonResponse<T> {
                 .message(message)
                 .data(data)
                 .build();
+    }
+
+    /** 기존 createFailure(int, String) 호출 호환용 */
+    public static <T> CommonResponse<T> createFailure(int code, String message) {
+        return fail(code, message);
+    }
+
+    /** 기존 createFailure(int, String, T) 호출 호환용 */
+    public static <T> CommonResponse<T> createFailure(int code, String message, T data) {
+        return fail(code, message, data);
     }
 }
