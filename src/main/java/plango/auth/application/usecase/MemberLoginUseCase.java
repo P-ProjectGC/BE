@@ -17,10 +17,7 @@ public class MemberLoginUseCase {
     private final MemberService memberService;
 
     public KakaoLoginResponse execute(MemberLoginRequest request) {
-        // 비즈니스 로직은 Service에서 처리
         Member member = memberService.loginByLoginId(request.loginId(), request.password());
-
-        // UseCase는 흐름 조합 + 응답 변환만 담당
         return KakaoAuthMapper.toKakaoLoginResponse(member, false);
     }
 }
