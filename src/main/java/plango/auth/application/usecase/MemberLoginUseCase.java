@@ -1,38 +1,26 @@
 package plango.auth.application.usecase;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import plango.auth.application.dto.request.MemberLoginRequest;
 import plango.auth.application.dto.response.KakaoLoginResponse;
 import plango.auth.application.mapper.KakaoAuthMapper;
-import plango.global.common.exception.BusinessException;
 import plango.member.domain.entity.Member;
 import plango.member.domain.service.MemberService;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberLoginUseCase {
 
     private final MemberService memberService;
 
-    @Transactional(readOnly = true)
     public KakaoLoginResponse execute(MemberLoginRequest request) {
-        Member member = memberService.findByEmail(request.loginId())
-                .orElseThrow(() -> new BusinessException(
-                        HttpStatus.UNAUTHORIZED.value(),
-                        "아이디 또는 비밀번호가 일치하지 않습니다."
-                ));
+        // 비즈니스 로직은 Service에서 처리
+        Member member = memberService.loginByLoginId(request.loginId(), request.password());
 
-        if (!member.getPassword().equals(request.password())) {
-            throw new BusinessException(
-                    HttpStatus.UNAUTHORIZED.value(),
-                    "아이디 또는 비밀번호가 일치하지 않습니다."
-            );
-        }
-
-        // 일반 로그인은 항상 기존 회원 → newMember = false
+        // UseCase는 흐름 조합 + 응답 변환만 담당
         return KakaoAuthMapper.toKakaoLoginResponse(member, false);
     }
 }

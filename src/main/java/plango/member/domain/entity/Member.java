@@ -19,23 +19,32 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false, unique = true)
+    // 일반 로그인용 아이디 (로그인 시 사용)
+    @Column(name = "login_id", nullable = false, unique = true, length = 50)
+    private String loginId;
+
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(length = 200)
+    @Column(nullable = false, length = 200)
     private String password;
 
+    @Column(nullable = false, length = 50)
     private String nickname;
 
     @Column(length = 255)
     private String profileImageUrl;
 
     // ===== 정적 팩토리 메서드 =====
+    // 카카오 로그인으로 가입하는 회원 생성 시 사용
     public static Member createKakaoMember(String email, String nickname, String profileImageUrl) {
         Member member = new Member();
+        // 카카오 회원은 우선 loginId 를 email 과 동일하게 사용
+        member.loginId = email;
         member.email = email;
         member.nickname = nickname;
         member.profileImageUrl = profileImageUrl;
+        // 비밀번호는 아직 없음 (추후 일반 로그인 전환 시 별도 처리)
         return member;
     }
 }
