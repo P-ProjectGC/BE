@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ResponseMessage {
 
-    KAKAO_LOGIN_SUCCESS("카카오 로그인에 성공했습니다.");
+    // ===== 공통 =====
+    SUCCESS(0, "성공");
 
+    private final int code;
     private final String message;
 }

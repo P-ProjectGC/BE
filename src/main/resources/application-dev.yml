@@ -48,6 +48,13 @@ security:
   aes:
     key: ${AES_KEY:}
 
-preview:
-  api:
-    url: ${PREVIEW_API_URL:http://localhost:3000}
+  preview:
+    api:
+      url: ${PREVIEW_API_URL}
+
+  oauth2:
+    kakao:
+      client-id: ${KAKAO_CLIENT_ID:}
+      redirect-uri: ${KAKAO_REDIRECT_URI:}
+
+
