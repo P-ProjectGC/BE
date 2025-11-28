@@ -54,11 +54,11 @@ security:
   aes:
     key: ${AES_KEY:}
 
-preview:
-  api:
-    url: ${PREVIEW_API_URL:http://localhost:3000}
-oauth2:
-  kakao:
-    client-id: ${KAKAO_CLIENT_ID}
+  preview:
+    api:
+      url: ${PREVIEW_API_URL:http://localhost:3000}
+  oauth2:
+    kakao:
+      client-id: ${KAKAO_CLIENT_ID}
 
-    redirect-uri: ${KAKAO_REDIRECT_URI}
+      redirect-uri: ${KAKAO_REDIRECT_URI}
