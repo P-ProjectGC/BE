@@ -13,3 +13,4 @@ public class MemberException extends BusinessException {
         this.errorCode = errorCode;
     }
 }
+

@@ -1,0 +1,2 @@
+ALTER TABLE room_member
+    MODIFY COLUMN role ENUM('OWNER', 'MEMBER') NOT NULL;
