@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import plango.member.domain.entity.Member;
 import plango.room.application.dto.request.RoomCreateRequest;
 import plango.room.application.dto.response.RoomCreateResponse;
+import plango.room.application.dto.response.RoomUpdateResponse;
 import plango.room.domain.entity.Room;
 import plango.room.domain.entity.RoomMember;
 
@@ -38,6 +39,25 @@ public class RoomMapper {
                 .endDate(room.getEndDate())
                 .ownerId(room.getOwner().getId())
                 .memberIds(memberIds)
+                .build();
+    }
+
+    public RoomUpdateResponse toRoomUpdateResponse(Room room) {
+        List<RoomUpdateResponse.MemberInfo> memberInfos = room.getMembers()
+                .stream()
+                .map(roomMember -> RoomUpdateResponse.MemberInfo.builder()
+                        .memberId(roomMember.getMember().getId())
+                        .nickname(roomMember.getMember().getNickname())
+                        .isHost(room.getOwner().getId().equals(roomMember.getMember().getId()))
+                        .build())
+                .collect(Collectors.toList());
+
+        return RoomUpdateResponse.builder()
+                .roomId(room.getId())
+                .roomName(room.getName())
+                .hostId(room.getOwner().getId())
+                .memo(room.getMemo())
+                .members(memberInfos)
                 .build();
     }
 }
