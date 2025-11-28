@@ -14,6 +14,7 @@ import plango.auth.application.dto.request.MemberLoginRequest;
 import plango.auth.application.dto.response.KakaoLoginResponse;
 import plango.auth.application.usecase.KakaoLoginUseCase;
 import plango.auth.application.usecase.MemberLoginUseCase;
+import plango.auth.application.usecase.LogoutUseCase;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
 
@@ -25,6 +26,7 @@ public class AuthController {
 
     private final KakaoLoginUseCase kakaoLoginUseCase;
     private final MemberLoginUseCase memberLoginUseCase;
+    private final LogoutUseCase logoutUseCase;
 
     @Operation(summary = "일반 로그인", description = "아이디와 비밀번호로 로그인합니다.")
     @PostMapping("/login")
@@ -45,6 +47,15 @@ public class AuthController {
         KakaoLoginResponse response = kakaoLoginUseCase.execute(request);
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.SUCCESS, response)
+        );
+    }
+
+    @Operation(summary = "로그아웃", description = "로그인 정보를 삭제하고 로그아웃합니다.")
+    @PostMapping("/logout")
+    public ResponseEntity<CommonResponse<Void>> logout() {
+        logoutUseCase.execute();
+        return ResponseEntity.ok(
+                CommonResponse.success(ResponseMessage.SUCCESS, null)
         );
     }
 }
