@@ -34,6 +34,12 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
+    @Transactional
+    public void updateProfile(Long memberId, String nickname, String profileImageUrl) {
+        Member member = getById(memberId);
+        member.updateProfile(nickname, profileImageUrl);
+    }
+
     public Member loginByLoginId(String loginId, String rawPassword) {
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.INVALID_MEMBER_CREDENTIAL));

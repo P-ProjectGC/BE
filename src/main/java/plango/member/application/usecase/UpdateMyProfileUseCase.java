@@ -3,19 +3,17 @@ package plango.member.application.usecase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import plango.member.application.dto.request.MemberProfileUpdateRequest;
-import plango.member.domain.entity.Member;
-import plango.member.domain.service.MemberGetService;
+import plango.member.domain.service.MemberService;
 
 @Service
 @RequiredArgsConstructor
 public class UpdateMyProfileUseCase {
 
-    private final MemberGetService memberGetService;
+    private final MemberService memberService;
 
     public void execute(Long memberId, MemberProfileUpdateRequest request) {
-        Member member = memberGetService.getById(memberId);
-        member.updateProfile(
-                request.name(),
+        memberService.updateProfile(
+                memberId,
                 request.nickname(),
                 request.profileImageUrl()
         );

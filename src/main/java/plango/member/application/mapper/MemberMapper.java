@@ -10,7 +10,6 @@ public class MemberMapper {
     public MemberProfileResponse toProfileResponse(Member member) {
         return new MemberProfileResponse(
                 member.getId(),
-                member.getName(),
                 member.getNickname(),
                 member.getEmail(),
                 member.getLoginId(),

@@ -1,0 +1,2 @@
+ALTER TABLE member
+    ADD COLUMN name VARCHAR(50) NOT NULL DEFAULT '' AFTER password;
