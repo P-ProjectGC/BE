@@ -26,10 +26,10 @@ public class KakaoAuthService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${oauth2.kakao.client-id}")
+    @Value("${security.oauth2.kakao.client-id}")
     private String clientId;
 
-    @Value("${oauth2.kakao.redirect-uri}")
+    @Value("${security.oauth2.kakao.redirect-uri}")
     private String redirectUri;
 
     public KakaoUserInfoResponse getUserInfoByAuthorizationCode(String authorizationCode) {
