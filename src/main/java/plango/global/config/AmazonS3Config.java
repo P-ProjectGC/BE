@@ -1,22 +1,37 @@
 package plango.global.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
+@RequiredArgsConstructor
 public class AmazonS3Config {
+
+    private final Environment environment;
 
     @Bean
     public S3Client s3Client() {
-        // 1) .env에 있는 S3_REGION 우선 사용
-        String region = System.getenv("S3_REGION");
+        String region = environment.getProperty("S3_REGION", "ap-southeast-2");
 
-        // 2) 없으면 기본값(네 dev 버킷 리전)으로 세팅
-        if (region == null || region.isBlank()) {
-            region = "ap-southeast-2"; // dev 기본 리전
+        String accessKey = environment.getProperty("S3_ACCESS_KEY_ID");
+        String secretKey = environment.getProperty("S3_SECRET_ACCESS_KEY");
+
+        if (accessKey != null && !accessKey.isBlank()
+                && secretKey != null && !secretKey.isBlank()) {
+
+            AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
+
+            return S3Client.builder()
+                    .region(Region.of(region))
+                    .credentialsProvider(StaticCredentialsProvider.create(credentials))
+                    .build();
         }
 
         return S3Client.builder()
