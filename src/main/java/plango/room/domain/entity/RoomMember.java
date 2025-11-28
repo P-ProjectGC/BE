@@ -47,6 +47,10 @@ public class RoomMember extends BaseTimeEntity {
         this.role = role;
     }
 
+    public static RoomMember create(Room room, Member member) {
+        return new RoomMember(room, member, RoomRole.MEMBER);
+    }
+
     void setRoom(Room room) {
         this.room = room;
     }
