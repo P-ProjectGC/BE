@@ -31,6 +31,9 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 50)
     private String nickname;
 
+    @Column(length = 50)
+    private String name;
+
     @Column(length = 255)
     private String profileImageUrl;
 
@@ -45,6 +48,12 @@ public class Member extends BaseTimeEntity {
         member.nickname = nickname;
         member.profileImageUrl = profileImageUrl;
         return member;
+    }
+
+    public void updateProfile(String name, String nickname, String profileImageUrl) {
+        this.name = name;
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
     }
 
 }
