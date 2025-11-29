@@ -12,7 +12,20 @@ public enum ResponseMessage {
 
     // ===== 프로필 =====
     MEMBER_PROFILE_GET_SUCCESS(0, "프로필 조회 성공"),
-    MEMBER_PROFILE_UPDATE_SUCCESS(0, "프로필 수정 성공");
+    MEMBER_PROFILE_UPDATE_SUCCESS(0, "프로필 수정 성공"),
+
+    // ===== 닉네임 =====
+    NICKNAME_UPDATE_SUCCESS(0, "닉네임 수정 성공"),
+    NICKNAME_CREATE_SUCCESS(0, "닉네임 생성 성공"),
+
+    // ===== 친구 기능 =====
+    FRIEND_REQUEST_CREATE_SUCCESS(0, "친구 요청 생성 성공"),
+    FRIEND_REQUEST_ALREADY_EXISTS(0, "이미 친구 요청이 존재합니다."),
+    FRIEND_REQUEST_INVALID_SELF(0, "자기 자신에게는 친구 요청을 보낼 수 없습니다."),
+    FRIEND_TARGET_NOT_FOUND(0, "해당 닉네임의 사용자를 찾을 수 없습니다."),
+    FRIEND_ACCEPT_SUCCESS(0, "친구 요청 수락 성공"),
+    FRIEND_REJECT_SUCCESS(0, "친구 요청 거절 성공"),
+    FRIEND_DELETE_SUCCESS(0, "친구 삭제 성공");
 
     private final int code;
     private final String message;
