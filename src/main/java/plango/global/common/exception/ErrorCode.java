@@ -17,8 +17,9 @@ public enum ErrorCode {
     ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "여행방을 찾을 수 없습니다."),
     ROOM_HOST_NOT_IN_MEMBERS(HttpStatus.BAD_REQUEST, "방장은 여행방 멤버 목록 안에 포함되어야 합니다."),
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "멤버를 찾을 수 없습니다."),
-    INVALID_DAY_INDEX(HttpStatus.BAD_REQUEST, "dayIndex가 유효한 범위를 벗어났습니다."),
-    ROOM_PLACE_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 여행방 장소를 찾을 수 없습니다.");// 이미 있을 수도 있음
+    INVALID_DAY_INDEX(HttpStatus.BAD_REQUEST, "날짜가 유효한 범위를 벗어났습니다."),
+    ROOM_PLACE_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 여행방 장소를 찾을 수 없습니다."),
+    ROOM_SCHEDULE_NOT_FOUND(HttpStatus.BAD_REQUEST, "일정을 찾을 수 없습니다.");// 이미 있을 수도 있음
 
     private final HttpStatus status;
     private final String message;
