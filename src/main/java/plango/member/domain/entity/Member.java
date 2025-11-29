@@ -28,12 +28,11 @@ public class Member extends BaseTimeEntity {
     @Column(length = 200)
     private String password;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String nickname;
 
     @Column(length = 255)
     private String profileImageUrl;
-
 
     public static Member createKakaoMember(
             String email,
@@ -51,5 +50,4 @@ public class Member extends BaseTimeEntity {
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
     }
-
 }
