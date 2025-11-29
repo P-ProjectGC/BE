@@ -16,6 +16,13 @@ public class CommonResponse<T> {
     private T data;
 
     /** 공통 ResponseMessage 기반 성공 응답 */
+    public static CommonResponse<Void> success(ResponseMessage message) {
+        return CommonResponse.<Void>builder()
+                .code(message.getCode())
+                .message(message.getMessage())
+                .data(null)
+                .build();
+    }
     public static <T> CommonResponse<T> success(ResponseMessage message, T data) {
         return CommonResponse.<T>builder()
                 .code(message.getCode())
@@ -25,6 +32,13 @@ public class CommonResponse<T> {
     }
 
     /** 임의 메시지 기반 성공 응답 */
+    public static CommonResponse<Void> success(String message) {
+        return CommonResponse.<Void>builder()
+                .code(0)
+                .message(message)
+                .data(null)
+                .build();
+    }
     public static <T> CommonResponse<T> success(String message, T data) {
         return CommonResponse.<T>builder()
                 .code(0)
@@ -37,10 +51,16 @@ public class CommonResponse<T> {
     public static <T> CommonResponse<T> createSuccess(ResponseMessage message, T data) {
         return success(message, data);
     }
+    public static CommonResponse<Void> createSuccess(ResponseMessage message) {
+        return success(message);
+    }
 
     /** 문자열 메시지 기반 성공 응답 (기존 createSuccess 호출 호환용) */
     public static <T> CommonResponse<T> createSuccess(String message, T data) {
         return success(message, data);
+    }
+    public static CommonResponse<Void> createSuccess(String message) {
+        return success(message);
     }
 
     /** ResponseMessage 기반 실패 응답 (data 는 null) */

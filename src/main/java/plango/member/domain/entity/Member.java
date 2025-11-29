@@ -47,4 +47,9 @@ public class Member extends BaseTimeEntity {
         return member;
     }
 
+    public void updateProfile(String nickname, String profileImageUrl) {
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+    }
+
 }

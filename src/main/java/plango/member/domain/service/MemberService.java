@@ -16,6 +16,11 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    public Member getById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+    }
+
     public Optional<Member> findByLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId);
     }
@@ -27,6 +32,12 @@ public class MemberService {
     @Transactional
     public Member save(Member member) {
         return memberRepository.save(member);
+    }
+
+    @Transactional
+    public void updateProfile(Long memberId, String nickname, String profileImageUrl) {
+        Member member = getById(memberId);
+        member.updateProfile(nickname, profileImageUrl);
     }
 
     public Member loginByLoginId(String loginId, String rawPassword) {
