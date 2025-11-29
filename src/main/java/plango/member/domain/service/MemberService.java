@@ -29,6 +29,10 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
+    public Optional<Member> findByNickname(String nickname) {
+        return memberRepository.findByNickname(nickname);
+    }
+
     @Transactional
     public Member save(Member member) {
         return memberRepository.save(member);
@@ -37,6 +41,11 @@ public class MemberService {
     @Transactional
     public void updateProfile(Long memberId, String nickname, String profileImageUrl) {
         Member member = getById(memberId);
+
+        if (nickname != null && !nickname.equals(member.getNickname())) {
+            validateNicknameUnique(nickname);
+        }
+
         member.updateProfile(nickname, profileImageUrl);
     }
 
@@ -49,6 +58,13 @@ public class MemberService {
         }
 
         return member;
+    }
+
+    private void validateNicknameUnique(String nickname) {
+        memberRepository.findByNickname(nickname)
+                .ifPresent(existingMember -> {
+                    throw new MemberException(MemberErrorCode.DUPLICATE_NICKNAME);
+                });
     }
 
     private boolean isPasswordMatch(Member member, String rawPassword) {
