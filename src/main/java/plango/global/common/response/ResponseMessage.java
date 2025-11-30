@@ -18,13 +18,17 @@ public enum ResponseMessage {
     NICKNAME_UPDATE_SUCCESS(0, "닉네임 수정 성공"),
     NICKNAME_CREATE_SUCCESS(0, "닉네임 생성 성공"),
 
-    // ===== 친구 요청 =====
+    // ===== 룸 일정(스케줄) =====
+    ROOM_SCHEDULE_CREATE_SUCCESS(0, "여행 일정 생성 성공"),
+    ROOM_SCHEDULE_GET_SUCCESS(0, "여행 일정 조회 성공"),
+    ROOM_SCHEDULE_UPDATE_SUCCESS(0, "여행 일정 수정 성공"),
+    ROOM_SCHEDULE_DELETE_SUCCESS(0, "여행 일정 삭제 성공"),
+
+    // ===== 친구 요청 / 관리 =====
     FRIEND_REQUEST_CREATE_SUCCESS(0, "친구 요청 생성 성공"),
     FRIEND_REQUEST_ALREADY_EXISTS(0, "이미 친구 요청이 존재합니다."),
     FRIEND_REQUEST_INVALID_SELF(0, "자기 자신에게는 친구 요청을 보낼 수 없습니다."),
     FRIEND_TARGET_NOT_FOUND(0, "해당 닉네임의 사용자를 찾을 수 없습니다."),
-
-    // ===== 친구 응답 =====
     FRIEND_ACCEPT_SUCCESS(0, "친구 요청 수락 성공"),
     FRIEND_REJECT_SUCCESS(0, "친구 요청 거절 성공"),
     FRIEND_DELETE_SUCCESS(0, "친구 삭제 성공");
