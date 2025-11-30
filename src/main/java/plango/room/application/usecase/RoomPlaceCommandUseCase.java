@@ -24,13 +24,17 @@ public class RoomPlaceCommandUseCase {
             roomId,
             memberId,
             request.name(),
-            request.address()
+            request.address(),
+            request.googlePlaceId(),
+            request.formattedAddress(),
+            request.latitude(),
+            request.longitude()
         );
 
         return RoomPlaceMapper.toResponse(roomPlace);
     }
 
-    public void deleteRoomPlace(Long roomPlaceId) {
+    public void deleteRoomPlace(Long roomId, Long roomPlaceId) {
         roomPlaceService.deletePlace(roomPlaceId);
     }
 }

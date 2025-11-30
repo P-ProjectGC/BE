@@ -26,11 +26,20 @@ public class RoomPlace extends BaseTimeEntity {
     @Column(length = 255)
     private String address;
 
+    @Column(name = "formatted_address", length = 255)
+    private String formattedAddress;
+
+    @Column(name = "google_place_id", length = 255)
+    private String googlePlaceId;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     @Column(name = "created_by_member_id", nullable = false)
     private Long createdByMemberId;
-
-    @Column(nullable = false)
-    private int likeCount = 0;
 
     @Column(nullable = false)
     private boolean deleted = false;
@@ -39,13 +48,20 @@ public class RoomPlace extends BaseTimeEntity {
     private RoomPlace(Room room,
                       String name,
                       String address,
+                      String googlePlaceId,
+                      String formattedAddress,
+                      Double latitude,
+                      Double longitude,
                       Long createdByMemberId) {
 
         this.room = room;
         this.name = name;
         this.address = address;
+        this.googlePlaceId = googlePlaceId;
+        this.formattedAddress = formattedAddress;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.createdByMemberId = createdByMemberId;
-        this.likeCount = 0;
         this.deleted = false;
     }
 
@@ -57,13 +73,17 @@ public class RoomPlace extends BaseTimeEntity {
         this.deleted = true;
     }
 
-    public void increaseLike() {
-        this.likeCount++;
-    }
-
-    public void decreaseLike() {
-        if (this.likeCount > 0) {
-            this.likeCount--;
-        }
+    public void updatePlaceInfo(String name,
+                                String address,
+                                String formattedAddress,
+                                String googlePlaceId,
+                                Double latitude,
+                                Double longitude) {
+        this.name = name;
+        this.address = address;
+        this.formattedAddress = formattedAddress;
+        this.googlePlaceId = googlePlaceId;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }
