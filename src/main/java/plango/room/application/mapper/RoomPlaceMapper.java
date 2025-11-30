@@ -13,9 +13,13 @@ public class RoomPlaceMapper {
         }
 
         return RoomPlaceResponse.builder()
-            .placeId(roomPlace.getId())
+            .id(roomPlace.getId())
             .name(roomPlace.getName())
             .address(roomPlace.getAddress())
+            .googlePlaceId(roomPlace.getGooglePlaceId())
+            .formattedAddress(roomPlace.getFormattedAddress())
+            .latitude(roomPlace.getLatitude())
+            .longitude(roomPlace.getLongitude())
             .createdByMemberId(roomPlace.getCreatedByMemberId())
             .build();
     }

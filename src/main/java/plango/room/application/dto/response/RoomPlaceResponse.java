@@ -4,8 +4,14 @@ import lombok.Builder;
 
 @Builder
 public record RoomPlaceResponse(
-        Long placeId,
+
+        Long id,
         String name,
         String address,
+        String formattedAddress,
+        String googlePlaceId,
+        Double latitude,
+        Double longitude,
         Long createdByMemberId
-) {}
+) {
+}

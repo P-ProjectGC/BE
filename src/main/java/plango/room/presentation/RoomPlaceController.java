@@ -50,10 +50,10 @@ public class RoomPlaceController {
     @DeleteMapping("/{placeId}")
     @Operation(summary = "위시리스트 장소 삭제", description = "여행방의 특정 장소를 삭제합니다.")
     public CommonResponse<Void> deletePlace(
+            @PathVariable Long roomId,
             @PathVariable Long placeId
     ) {
-        roomPlaceCommandUseCase.deleteRoomPlace(placeId);
+        roomPlaceCommandUseCase.deleteRoomPlace(roomId, placeId);
         return CommonResponse.success(ResponseMessage.SUCCESS);
     }
 }
-

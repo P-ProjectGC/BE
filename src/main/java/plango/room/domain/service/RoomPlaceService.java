@@ -22,7 +22,11 @@ public class RoomPlaceService {
     public RoomPlace createPlace(Long roomId,
                                  Long memberId,
                                  String name,
-                                 String address) {
+                                 String address,
+                                 String googlePlaceId,
+                                 String formattedAddress,
+                                 Double latitude,
+                                 Double longitude) {
 
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOT_FOUND));
@@ -31,6 +35,10 @@ public class RoomPlaceService {
                 .room(room)
                 .name(name)
                 .address(address)
+                .googlePlaceId(googlePlaceId)
+                .formattedAddress(formattedAddress)
+                .latitude(latitude)
+                .longitude(longitude)
                 .createdByMemberId(memberId)
                 .build();
 
