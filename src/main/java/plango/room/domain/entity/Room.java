@@ -17,6 +17,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import plango.global.common.entity.BaseTimeEntity;
+import plango.global.common.exception.BusinessException;
+import plango.global.common.exception.ErrorCode;
 import plango.member.domain.entity.Member;
 
 @Entity
@@ -46,9 +48,6 @@ public class Room extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomMember> members = new ArrayList<>();
-
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WishlistItem> wishlistItems = new ArrayList<>();
 
     public Room(
             String name,
@@ -81,8 +80,15 @@ public class Room extends BaseTimeEntity {
         roomMember.setRoom(this);
     }
 
-    public void addWishlistItem(WishlistItem wishlistItem) {
-        this.wishlistItems.add(wishlistItem);
-        wishlistItem.setRoom(this);
+    public int getTotalDays() {
+        return (int) (endDate.toEpochDay() - startDate.toEpochDay() + 1);
+    }
+
+    public void validateDayIndex(int dayIndex) {
+        int totalDays = getTotalDays();
+
+        if (dayIndex < 1 || dayIndex > totalDays) {
+            throw new BusinessException(ErrorCode.INVALID_DAY_INDEX);
+        }
     }
 }
