@@ -19,7 +19,15 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
-
+  flyway:
+    enabled: true
+    url: ${DB_URL}
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+    baseline-on-migrate: true
+    baseline-version: 1
+    locations: classpath:db/migration
+    out-of-order: true
 # --- 여긴 spring 밖(최상위) ---
 jwt:
   key: ${JWT_KEY}
@@ -42,14 +50,6 @@ cloud:
     stack:
       auto: false
 
-flyway:
-  enabled: true
-  url: ${DB_URL}
-  user: ${DB_USER}
-  password: ${DB_PASSWORD}
-  baseline-on-migrate: true
-  baseline-version: 1
-  locations: classpath:db/migration
 
 security:
   aes:
