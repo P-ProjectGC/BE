@@ -15,48 +15,63 @@ import plango.member.domain.service.MemberService;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class KakaoLoginUseCase {
 
     private static final String KAKAO_PROVIDER = "KAKAO";
 
     private final KakaoAuthService kakaoAuthService;
+
     private final MemberService memberService;
+
     private final SocialAccountService socialAccountService;
 
     @Transactional
     public KakaoLoginResponse execute(KakaoLoginRequest request) {
-        // 1) 인가 코드로 카카오 사용자 정보 조회
         KakaoUserInfoResponse kakaoUserInfo =
                 kakaoAuthService.getUserInfoByAuthorizationCode(request.authorizationCode());
 
-        Long kakaoId = kakaoUserInfo.getId();
+        Long kakaoId = kakaoUserInfo.id();
+
         String email = kakaoUserInfo.getEmail();
 
-        // 2) 기존 소셜 계정 조회 (서비스 사용)
-        SocialAccount socialAccount = socialAccountService
-                .findByProviderAndProviderUserId(KAKAO_PROVIDER, kakaoId.toString())
-                .orElse(null);
+        SocialAccount socialAccount =
+                socialAccountService.findByProviderAndProviderUserId(
+                                KAKAO_PROVIDER,
+                                kakaoId.toString()
+                        )
+                        .orElse(null);
 
         Member member;
-        boolean isNewMember = false;
+
+        boolean isNewMember;
 
         if (socialAccount == null) {
-            // 2-1) 기존 회원 조회 (서비스 사용)
-            member = memberService.findByEmail(email)
-                    .orElseGet(() -> memberService.save(KakaoAuthMapper.toMember(kakaoUserInfo)));
+            if (email == null || email.isBlank()) {
+                member = memberService.save(
+                        KakaoAuthMapper.toMember(kakaoUserInfo)
+                );
+            } else {
+                member = memberService.findByEmail(email)
+                        .orElseGet(
+                                () -> memberService.save(
+                                        KakaoAuthMapper.toMember(kakaoUserInfo)
+                                )
+                        );
+            }
 
-            // 2-2) 소셜 계정 생성 및 저장 (서비스 사용)
             socialAccount = socialAccountService.createAndSaveKakaoAccount(
                     kakaoId.toString(),
                     member
             );
+
             isNewMember = true;
         } else {
-            // 기존 회원
             member = socialAccount.getMember();
+
+            isNewMember = false;
         }
 
-        // 3) 응답 DTO 매핑
         return KakaoAuthMapper.toKakaoLoginResponse(member, isNewMember);
     }
 }
