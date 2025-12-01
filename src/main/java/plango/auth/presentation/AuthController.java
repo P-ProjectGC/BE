@@ -15,11 +15,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import plango.auth.application.dto.request.KakaoLoginRequest;
+import plango.auth.application.dto.request.MemberLoginRequest;
 import plango.auth.application.dto.request.MemberSignUpRequest;
 import plango.auth.application.dto.response.DuplicateCheckResponse;
+import plango.auth.application.dto.response.KakaoLoginResponse;
 import plango.auth.application.dto.response.MemberSignUpResponse;
 import plango.auth.application.usecase.EmailDuplicateCheckUseCase;
+import plango.auth.application.usecase.KakaoLoginUseCase;
 import plango.auth.application.usecase.LoginIdDuplicateCheckUseCase;
+import plango.auth.application.usecase.LogoutUseCase;
+import plango.auth.application.usecase.MemberLoginUseCase;
 import plango.auth.application.usecase.MemberSignUpUseCase;
 import plango.auth.application.usecase.NicknameDuplicateCheckUseCase;
 import plango.global.common.response.CommonResponse;
@@ -35,6 +41,9 @@ public class AuthController {
     private final NicknameDuplicateCheckUseCase nicknameDuplicateCheckUseCase;
     private final LoginIdDuplicateCheckUseCase loginIdDuplicateCheckUseCase;
     private final EmailDuplicateCheckUseCase emailDuplicateCheckUseCase;
+    private final MemberLoginUseCase memberLoginUseCase;
+    private final KakaoLoginUseCase kakaoLoginUseCase;
+    private final LogoutUseCase logoutUseCase;
 
     @Operation(summary = "일반 회원가입", description = "이름, 닉네임, 아이디, 비밀번호, 이메일로 회원가입합니다.")
     @PostMapping("/signup")
@@ -46,6 +55,41 @@ public class AuthController {
         MemberSignUpResponse response = memberSignUpUseCase.execute(request);
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.MEMBER_SIGN_UP_SUCCESS, response)
+        );
+    }
+
+    @Operation(summary = "일반 로그인", description = "아이디와 비밀번호로 로그인합니다.")
+    @PostMapping("/login")
+    public ResponseEntity<CommonResponse<KakaoLoginResponse>> login(
+            @Valid
+            @RequestBody
+            MemberLoginRequest request
+    ) {
+        KakaoLoginResponse response = memberLoginUseCase.execute(request);
+        return ResponseEntity.ok(
+                CommonResponse.success(ResponseMessage.SUCCESS, response)
+        );
+    }
+
+    @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 사용해 로그인합니다.")
+    @PostMapping("/login/kakao")
+    public ResponseEntity<CommonResponse<KakaoLoginResponse>> kakaoLogin(
+            @Valid
+            @RequestBody
+            KakaoLoginRequest request
+    ) {
+        KakaoLoginResponse response = kakaoLoginUseCase.execute(request);
+        return ResponseEntity.ok(
+                CommonResponse.success(ResponseMessage.SUCCESS, response)
+        );
+    }
+
+    @Operation(summary = "로그아웃", description = "현재 로그인된 사용자를 로그아웃합니다.")
+    @PostMapping("/logout")
+    public ResponseEntity<CommonResponse<Void>> logout() {
+        logoutUseCase.execute();
+        return ResponseEntity.ok(
+                CommonResponse.success(ResponseMessage.SUCCESS)
         );
     }
 

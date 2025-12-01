@@ -44,6 +44,7 @@ public class Member extends BaseTimeEntity {
     ) {
         Member member = new Member();
         member.email = email;
+        member.name = nickname;
         member.nickname = nickname;
         member.profileImageUrl = profileImageUrl;
         return member;
