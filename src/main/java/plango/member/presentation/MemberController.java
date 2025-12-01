@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
 import plango.member.application.dto.request.MemberProfileUpdateRequest;
+import plango.member.application.dto.request.ChangePasswordRequest;
 import plango.member.application.dto.response.MemberProfileResponse;
 import plango.member.application.usecase.GetMyProfileUseCase;
 import plango.member.application.usecase.UpdateMyProfileUseCase;
+import plango.member.application.usecase.ChangePasswordUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -25,6 +27,7 @@ public class MemberController {
 
     private final GetMyProfileUseCase getMyProfileUseCase;
     private final UpdateMyProfileUseCase updateMyProfileUseCase;
+    private final ChangePasswordUseCase changePasswordUseCase;
 
     @Operation(summary = "프로필 조회", description = "memberId를 기준으로 프로필 정보를 조회합니다.")
     @GetMapping("/{memberId}")
@@ -47,6 +50,18 @@ public class MemberController {
         updateMyProfileUseCase.execute(memberId, request);
         return CommonResponse.success(
                 ResponseMessage.MEMBER_PROFILE_UPDATE_SUCCESS
+        );
+    }
+
+    @Operation(summary = "비밀번호 변경", description = "현재 비밀번호를 검증하고 새 비밀번호로 변경합니다.")
+    @PatchMapping("/{memberId}/password")
+    public CommonResponse<Void> changePassword(
+            @PathVariable Long memberId,
+            @RequestBody @Valid ChangePasswordRequest request
+    ) {
+        changePasswordUseCase.execute(memberId, request);
+        return CommonResponse.success(
+                ResponseMessage.MEMBER_PASSWORD_CHANGE_SUCCESS
         );
     }
 }
