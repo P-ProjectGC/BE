@@ -7,13 +7,42 @@ import lombok.NoArgsConstructor;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record KakaoUserInfoResponse(
-
         Long id,
-
         @JsonProperty("kakao_account")
         KakaoAccount kakaoAccount
-
 ) {
+
+    public String getEmail() {
+        if (kakaoAccount == null) {
+            return null;
+        }
+
+        return kakaoAccount.getEmail();
+    }
+
+    public String getNickname() {
+        if (kakaoAccount == null) {
+            return null;
+        }
+
+        if (kakaoAccount.getProfile() == null) {
+            return null;
+        }
+
+        return kakaoAccount.getProfile().getNickname();
+    }
+
+    public String getProfileImageUrl() {
+        if (kakaoAccount == null) {
+            return null;
+        }
+
+        if (kakaoAccount.getProfile() == null) {
+            return null;
+        }
+
+        return kakaoAccount.getProfile().getProfileImageUrl();
+    }
 
     @Getter
     @NoArgsConstructor
@@ -31,29 +60,10 @@ public record KakaoUserInfoResponse(
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Profile {
 
+        @JsonProperty("nickname")
         private String nickname;
 
         @JsonProperty("profile_image_url")
         private String profileImageUrl;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return kakaoAccount != null ? kakaoAccount.getEmail() : null;
-    }
-
-    public String getNickname() {
-        return (kakaoAccount != null && kakaoAccount.getProfile() != null)
-                ? kakaoAccount.getProfile().getNickname()
-                : null;
-    }
-
-    public String getProfileImageUrl() {
-        return (kakaoAccount != null && kakaoAccount.getProfile() != null)
-                ? kakaoAccount.getProfile().getProfileImageUrl()
-                : null;
     }
 }
