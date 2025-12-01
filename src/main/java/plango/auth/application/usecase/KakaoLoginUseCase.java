@@ -10,6 +10,8 @@ import plango.auth.application.mapper.KakaoAuthMapper;
 import plango.auth.domain.entity.SocialAccount;
 import plango.auth.domain.service.KakaoAuthService;
 import plango.auth.domain.service.SocialAccountService;
+import plango.global.common.exception.BusinessException;
+import plango.global.common.exception.ErrorCode;
 import plango.member.domain.entity.Member;
 import plango.member.domain.service.MemberService;
 
@@ -17,46 +19,45 @@ import plango.member.domain.service.MemberService;
 @RequiredArgsConstructor
 public class KakaoLoginUseCase {
 
-    private static final String KAKAO_PROVIDER = "KAKAO";
+    private static final String PROVIDER_KAKAO = "KAKAO";
 
     private final KakaoAuthService kakaoAuthService;
-    private final MemberService memberService;
     private final SocialAccountService socialAccountService;
+    private final MemberService memberService;
 
     @Transactional
     public KakaoLoginResponse execute(KakaoLoginRequest request) {
-        // 1) 인가 코드로 카카오 사용자 정보 조회
         KakaoUserInfoResponse kakaoUserInfo =
                 kakaoAuthService.getUserInfoByAuthorizationCode(request.authorizationCode());
 
-        Long kakaoId = kakaoUserInfo.getId();
-        String email = kakaoUserInfo.getEmail();
+        Long kakaoId = kakaoUserInfo.id();
 
-        // 2) 기존 소셜 계정 조회 (서비스 사용)
-        SocialAccount socialAccount = socialAccountService
-                .findByProviderAndProviderUserId(KAKAO_PROVIDER, kakaoId.toString())
-                .orElse(null);
-
-        Member member;
-        boolean isNewMember = false;
-
-        if (socialAccount == null) {
-            // 2-1) 기존 회원 조회 (서비스 사용)
-            member = memberService.findByEmail(email)
-                    .orElseGet(() -> memberService.save(KakaoAuthMapper.toMember(kakaoUserInfo)));
-
-            // 2-2) 소셜 계정 생성 및 저장 (서비스 사용)
-            socialAccount = socialAccountService.createAndSaveKakaoAccount(
-                    kakaoId.toString(),
-                    member
-            );
-            isNewMember = true;
-        } else {
-            // 기존 회원
-            member = socialAccount.getMember();
+        if (kakaoId == null) {
+            throw new BusinessException(ErrorCode.KAKAO_SERVER_ERROR);
         }
 
-        // 3) 응답 DTO 매핑
-        return KakaoAuthMapper.toKakaoLoginResponse(member, isNewMember);
+        SocialAccount socialAccount =
+                socialAccountService.findByProviderAndProviderUserId(
+                        PROVIDER_KAKAO,
+                        String.valueOf(kakaoId)
+                ).orElse(null);
+
+        Member member;
+        boolean newMember;
+
+        if (socialAccount == null) {
+            Member created = KakaoAuthMapper.toMember(kakaoUserInfo);
+            member = memberService.save(created);
+            socialAccountService.createAndSaveKakaoAccount(
+                    String.valueOf(kakaoId),
+                    member
+            );
+            newMember = true;
+        } else {
+            member = socialAccount.getMember();
+            newMember = false;
+        }
+
+        return KakaoAuthMapper.toKakaoLoginResponse(member, newMember);
     }
 }
