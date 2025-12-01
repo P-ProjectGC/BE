@@ -70,7 +70,7 @@ public class FriendService {
     }
 
     private void validateRequestedStatus(Friend friend) {
-        if (friend.getStatus() != FriendStatus.REQUESTED) {
+        if (friend.getStatus() != FriendStatus.requested) {
             throw new FriendException(FriendErrorCode.INVALID_FRIEND_STATUS);
         }
     }

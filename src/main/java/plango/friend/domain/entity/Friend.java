@@ -46,10 +46,11 @@ public class Friend extends BaseTimeEntity {
     }
 
     public static Friend request(Member requester, Member receiver) {
-        return new Friend(requester, receiver, FriendStatus.REQUESTED);
+        return new Friend(requester, receiver, FriendStatus.requested);
     }
 
     public void accept() {
-        this.status = FriendStatus.ACCEPTED;
+        this.status = FriendStatus.accepted;
     }
+
 }
