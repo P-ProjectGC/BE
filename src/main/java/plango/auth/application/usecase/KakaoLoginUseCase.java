@@ -10,20 +10,21 @@ import plango.auth.application.mapper.KakaoAuthMapper;
 import plango.auth.domain.entity.SocialAccount;
 import plango.auth.domain.service.KakaoAuthService;
 import plango.auth.domain.service.SocialAccountService;
-import plango.global.common.exception.BusinessException;
-import plango.global.common.exception.ErrorCode;
 import plango.member.domain.entity.Member;
 import plango.member.domain.service.MemberService;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class KakaoLoginUseCase {
 
-    private static final String PROVIDER_KAKAO = "KAKAO";
+    private static final String KAKAO_PROVIDER = "KAKAO";
 
     private final KakaoAuthService kakaoAuthService;
-    private final SocialAccountService socialAccountService;
+
     private final MemberService memberService;
+
+    private final SocialAccountService socialAccountService;
 
     @Transactional
     public KakaoLoginResponse execute(KakaoLoginRequest request) {
@@ -32,32 +33,45 @@ public class KakaoLoginUseCase {
 
         Long kakaoId = kakaoUserInfo.id();
 
-        if (kakaoId == null) {
-            throw new BusinessException(ErrorCode.KAKAO_SERVER_ERROR);
-        }
+        String email = kakaoUserInfo.getEmail();
 
         SocialAccount socialAccount =
                 socialAccountService.findByProviderAndProviderUserId(
-                        PROVIDER_KAKAO,
-                        String.valueOf(kakaoId)
-                ).orElse(null);
+                                KAKAO_PROVIDER,
+                                kakaoId.toString()
+                        )
+                        .orElse(null);
 
         Member member;
-        boolean newMember;
+
+        boolean isNewMember;
 
         if (socialAccount == null) {
-            Member created = KakaoAuthMapper.toMember(kakaoUserInfo);
-            member = memberService.save(created);
-            socialAccountService.createAndSaveKakaoAccount(
-                    String.valueOf(kakaoId),
+            if (email == null || email.isBlank()) {
+                member = memberService.save(
+                        KakaoAuthMapper.toMember(kakaoUserInfo)
+                );
+            } else {
+                member = memberService.findByEmail(email)
+                        .orElseGet(
+                                () -> memberService.save(
+                                        KakaoAuthMapper.toMember(kakaoUserInfo)
+                                )
+                        );
+            }
+
+            socialAccount = socialAccountService.createAndSaveKakaoAccount(
+                    kakaoId.toString(),
                     member
             );
-            newMember = true;
+
+            isNewMember = true;
         } else {
             member = socialAccount.getMember();
-            newMember = false;
+
+            isNewMember = false;
         }
 
-        return KakaoAuthMapper.toKakaoLoginResponse(member, newMember);
+        return KakaoAuthMapper.toKakaoLoginResponse(member, isNewMember);
     }
 }
