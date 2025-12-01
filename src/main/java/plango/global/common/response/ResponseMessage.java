@@ -36,8 +36,7 @@ public enum ResponseMessage {
     FRIEND_TARGET_NOT_FOUND(0, "해당 닉네임의 사용자를 찾을 수 없습니다."),
     FRIEND_ACCEPT_SUCCESS(0, "친구 요청 수락 성공"),
     FRIEND_REJECT_SUCCESS(0, "친구 요청 거절 성공"),
-    FRIEND_CANCEL_SUCCESS(0, "친구 요청 취소 성공"),
-    KAKAO_FRIEND_SYNC_SUCCESS(0, "카카오 친구 연동 성공");
+    FRIEND_CANCEL_SUCCESS(0, "친구 요청 취소 성공");
 
     private final int code;
     private final String message;

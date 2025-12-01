@@ -14,7 +14,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
-import plango.auth.application.dto.response.KakaoFriendListResponse;
 import plango.auth.application.dto.response.KakaoTokenResponse;
 import plango.auth.application.dto.response.KakaoUserInfoResponse;
 import plango.global.common.exception.BusinessException;
@@ -30,8 +29,6 @@ public class KakaoAuthService {
     private static final String KAKAO_TOKEN_URI = "https://kauth.kakao.com/oauth/token";
 
     private static final String KAKAO_USER_INFO_URI = "https://kapi.kakao.com/v2/user/me";
-
-    private static final String KAKAO_FRIENDS_URI = "https://kapi.kakao.com/v1/api/talk/friends";
 
     @Value("${security.oauth2.kakao.client-id}")
     private String clientId;
@@ -53,13 +50,6 @@ public class KakaoAuthService {
         String accessToken = tokenResponse.accessToken();
         log.info("accessToken from Kakao = {}", accessToken);
         return requestUserInfo(accessToken);
-    }
-
-    public KakaoFriendListResponse getFriendsByAuthorizationCode(String authorizationCode) {
-        KakaoTokenResponse tokenResponse = requestToken(authorizationCode);
-        String accessToken = tokenResponse.accessToken();
-        log.info("accessToken(from friends) = {}", accessToken);
-        return requestFriends(accessToken);
     }
 
     private KakaoTokenResponse requestToken(String authorizationCode) {
@@ -144,44 +134,6 @@ public class KakaoAuthService {
             );
         } catch (RestClientException exception) {
             log.error("Kakao userInfo request RestClientException", exception);
-            throw new BusinessException(
-                    ErrorCode.KAKAO_SERVER_ERROR.getStatusCode(),
-                    ErrorCode.KAKAO_SERVER_ERROR.getMessage()
-            );
-        }
-    }
-
-    private KakaoFriendListResponse requestFriends(String accessToken) {
-        HttpHeaders headers = createBearerHeaders(accessToken);
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-        try {
-            ResponseEntity<KakaoFriendListResponse> response = restTemplate.exchange(
-                    KAKAO_FRIENDS_URI,
-                    HttpMethod.GET,
-                    entity,
-                    KakaoFriendListResponse.class
-            );
-            log.info("requestFriends() status = {}", response.getStatusCode());
-            KakaoFriendListResponse friends = response.getBody();
-            if (!response.getStatusCode().is2xxSuccessful() || friends == null) {
-                throw new BusinessException(
-                        ErrorCode.KAKAO_SERVER_ERROR.getStatusCode(),
-                        ErrorCode.KAKAO_SERVER_ERROR.getMessage()
-                );
-            }
-            return friends;
-        } catch (RestClientResponseException exception) {
-            log.error("Kakao friends request error. status = {}, body = {}",
-                    exception.getRawStatusCode(),
-                    exception.getResponseBodyAsString()
-            );
-            ErrorCode errorCode = selectErrorCode(exception.getRawStatusCode());
-            throw new BusinessException(
-                    errorCode.getStatusCode(),
-                    errorCode.getMessage()
-            );
-        } catch (RestClientException exception) {
-            log.error("Kakao friends request RestClientException", exception);
             throw new BusinessException(
                     ErrorCode.KAKAO_SERVER_ERROR.getStatusCode(),
                     ErrorCode.KAKAO_SERVER_ERROR.getMessage()
