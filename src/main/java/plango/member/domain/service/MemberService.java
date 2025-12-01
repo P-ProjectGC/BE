@@ -4,6 +4,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import plango.member.domain.entity.Member;
 import plango.member.domain.repository.MemberRepository;
 import plango.member.exception.MemberErrorCode;
@@ -15,6 +16,7 @@ import plango.member.exception.MemberException;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Member getById(Long memberId) {
         return memberRepository.findById(memberId)
@@ -49,6 +51,39 @@ public class MemberService {
         member.updateProfile(nickname, profileImageUrl);
     }
 
+    @Transactional
+    public void changePassword(Long memberId,
+                               String currentPassword,
+                               String newPassword,
+                               String newPasswordConfirm) {
+
+        Member member = getById(memberId);
+
+        // 소셜(카카오) 회원은 비밀번호 변경 불가
+        if (member.isSocialMember()) {
+            throw new MemberException(MemberErrorCode.PASSWORD_CHANGE_NOT_ALLOWED_FOR_SOCIAL_MEMBER);
+        }
+
+        // 현재 비밀번호 검증
+        if (!isPasswordMatch(member, currentPassword)) {
+            throw new MemberException(MemberErrorCode.INVALID_CURRENT_PASSWORD);
+        }
+
+        // 새 비밀번호 & 확인 일치 여부 검증
+        if (!newPassword.equals(newPasswordConfirm)) {
+            throw new MemberException(MemberErrorCode.NEW_PASSWORD_CONFIRM_NOT_MATCH);
+        }
+
+        // 이전 비밀번호와 동일한지 검증
+        if (isPasswordMatch(member, newPassword)) {
+            throw new MemberException(MemberErrorCode.NEW_PASSWORD_SAME_AS_OLD);
+        }
+
+        // 비밀번호 변경
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+        member.updatePassword(encodedNewPassword);
+    }
+
     public Member loginByLoginId(String loginId, String rawPassword) {
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.INVALID_MEMBER_CREDENTIAL));
@@ -72,6 +107,6 @@ public class MemberService {
             return false;
         }
 
-        return member.getPassword().equals(rawPassword);
+        return passwordEncoder.matches(rawPassword, member.getPassword());
     }
 }

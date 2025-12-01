@@ -13,6 +13,7 @@ public enum ResponseMessage {
     // ===== 프로필 =====
     MEMBER_PROFILE_GET_SUCCESS(0, "프로필 조회 성공"),
     MEMBER_PROFILE_UPDATE_SUCCESS(0, "프로필 수정 성공"),
+    MEMBER_PASSWORD_CHANGE_SUCCESS(0,"비밀번호 변경에 성공했습니다."),
 
     // ===== 여행방 장소 (RoomPlace) =====
     ROOM_PLACE_LIST_SUCCESS(0, "위시리스트 장소 조회 성공"),

@@ -56,6 +56,8 @@ dependencies {
 	implementation "software.amazon.awssdk:s3"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation 'org.springframework.security:spring-security-crypto'
 }
 
 tasks.named('test') {
