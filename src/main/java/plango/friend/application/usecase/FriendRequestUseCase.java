@@ -13,6 +13,7 @@ import plango.friend.domain.service.FriendService;
 import plango.member.domain.entity.Member;
 import plango.member.domain.repository.MemberRepository;
 import plango.member.domain.service.MemberGetService;
+import plango.notification.domain.service.NotificationSender;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class FriendRequestUseCase {
     private final MemberRepository memberRepository;
     private final FriendService friendService;
     private final FriendMapper friendMapper;
+    private final NotificationSender notificationSender;
 
     @Transactional
     public FriendResponse execute(Long requesterId, FriendRequestRequest request) {
@@ -31,6 +33,11 @@ public class FriendRequestUseCase {
                 .orElseThrow(() -> new FriendException(FriendErrorCode.FRIEND_TARGET_NOT_FOUND));
 
         Friend friend = friendService.requestFriend(requester, receiver);
+
+        notificationSender.sendFriendRequest(
+                receiver.getId(),
+                requester.getId()
+        );
 
         return friendMapper.toFriendResponse(friend);
     }

@@ -28,6 +28,9 @@ public enum ResponseMessage {
     // ===== 닉네임 =====
     NICKNAME_UPDATE_SUCCESS(0, "닉네임 수정 성공"),
     NICKNAME_CREATE_SUCCESS(0, "닉네임 생성 성공"),
+    // ===== 알림 =====
+    NOTIFICATION_SETTING_READ_SUCCESS(0,"알림 설정 조회 성공"),
+    NOTIFICATION_SETTING_UPDATE_SUCCESS(0,"알림 설정 변경 성공"),
 
     // ===== 친구 요청 / 관리 =====
     FRIEND_REQUEST_CREATE_SUCCESS(0, "친구 요청 생성 성공"),
