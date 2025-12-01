@@ -10,6 +10,12 @@ public enum ResponseMessage {
     // ===== 공통 =====
     SUCCESS(0, "성공"),
 
+    MEMBER_SIGN_UP_SUCCESS(0, "회원가입 성공"),
+
+    MEMBER_NICKNAME_CHECK_SUCCESS(0, "닉네임 중복 확인 성공"),
+    MEMBER_LOGIN_ID_CHECK_SUCCESS(0, "아이디 중복 확인 성공"),
+    MEMBER_EMAIL_CHECK_SUCCESS(0, "이메일 중복 확인 성공"),
+
     // ===== 프로필 =====
     MEMBER_PROFILE_GET_SUCCESS(0, "프로필 조회 성공"),
     MEMBER_PROFILE_UPDATE_SUCCESS(0, "프로필 수정 성공"),
