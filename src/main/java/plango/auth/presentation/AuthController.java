@@ -18,9 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import plango.auth.application.dto.request.KakaoLoginRequest;
 import plango.auth.application.dto.request.MemberLoginRequest;
 import plango.auth.application.dto.request.MemberSignUpRequest;
+import plango.auth.application.dto.request.FindLoginIdRequest;
+import plango.auth.application.dto.request.VerifyLoginIdCodeRequest;
 import plango.auth.application.dto.response.DuplicateCheckResponse;
 import plango.auth.application.dto.response.KakaoLoginResponse;
 import plango.auth.application.dto.response.MemberSignUpResponse;
+import plango.auth.application.dto.response.FindLoginIdPreviewResponse;
+import plango.auth.application.dto.response.FindLoginIdResultResponse;
+import plango.auth.application.dto.response.SendLoginIdVerificationCodeResponse;
 import plango.auth.application.usecase.EmailDuplicateCheckUseCase;
 import plango.auth.application.usecase.KakaoLoginUseCase;
 import plango.auth.application.usecase.LoginIdDuplicateCheckUseCase;
@@ -28,6 +33,9 @@ import plango.auth.application.usecase.LogoutUseCase;
 import plango.auth.application.usecase.MemberLoginUseCase;
 import plango.auth.application.usecase.MemberSignUpUseCase;
 import plango.auth.application.usecase.NicknameDuplicateCheckUseCase;
+import plango.auth.application.usecase.FindLoginIdUseCase;
+import plango.auth.application.usecase.SendLoginIdVerificationCodeUseCase;
+import plango.auth.application.usecase.VerifyLoginIdCodeUseCase;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
 
@@ -44,6 +52,10 @@ public class AuthController {
     private final MemberLoginUseCase memberLoginUseCase;
     private final KakaoLoginUseCase kakaoLoginUseCase;
     private final LogoutUseCase logoutUseCase;
+    private final FindLoginIdUseCase findLoginIdUseCase;
+    private final SendLoginIdVerificationCodeUseCase sendLoginIdVerificationCodeUseCase;
+    private final VerifyLoginIdCodeUseCase verifyLoginIdCodeUseCase;
+
 
     @Operation(summary = "일반 회원가입", description = "이름, 닉네임, 아이디, 비밀번호, 이메일로 회원가입합니다.")
     @PostMapping("/signup")
@@ -135,6 +147,60 @@ public class AuthController {
         DuplicateCheckResponse response = emailDuplicateCheckUseCase.execute(email);
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.MEMBER_EMAIL_CHECK_SUCCESS, response)
+        );
+    }
+
+    @Operation(
+            summary = "아이디 찾기 (마스킹)",
+            description = "회원가입 시 사용한 이메일로 아이디를 조회하고, 뒤 5자리를 마스킹한 아이디를 반환합니다."
+    )
+    @PostMapping("/find-id")
+    public ResponseEntity<CommonResponse<FindLoginIdPreviewResponse>> findLoginId(
+            @Valid
+            @RequestBody
+            FindLoginIdRequest request
+    ) {
+        FindLoginIdPreviewResponse response = findLoginIdUseCase.execute(request);
+
+        return ResponseEntity.ok(
+                CommonResponse.success(ResponseMessage.SUCCESS, response)
+        );
+    }
+
+    @Operation(
+            summary = "아이디 찾기 추가 인증번호 발송",
+            description = "아이디를 찾기 위해 입력한 이메일로 6자리 인증번호를 전송합니다. "
+                    + "테스트 편의를 위해 응답에 인증번호가 함께 포함됩니다."
+    )
+    @PostMapping("/find-id/send-code")
+    public ResponseEntity<CommonResponse<SendLoginIdVerificationCodeResponse>> sendFindIdCode(
+            @Valid
+            @RequestBody
+            FindLoginIdRequest request
+    ) {
+        SendLoginIdVerificationCodeResponse response =
+                sendLoginIdVerificationCodeUseCase.execute(request);
+
+        return ResponseEntity.ok(
+                CommonResponse.success(ResponseMessage.SUCCESS, response)
+        );
+    }
+
+    @Operation(
+            summary = "아이디 찾기 인증번호 검증",
+            description = "이메일로 발송된 6자리 인증번호를 검증하고, 성공 시 전체 아이디를 반환합니다."
+    )
+    @PostMapping("/find-id/verify-code")
+    public ResponseEntity<CommonResponse<FindLoginIdResultResponse>> verifyFindIdCode(
+            @Valid
+            @RequestBody
+            VerifyLoginIdCodeRequest request
+    ) {
+        FindLoginIdResultResponse response =
+                verifyLoginIdCodeUseCase.execute(request);
+
+        return ResponseEntity.ok(
+                CommonResponse.success(ResponseMessage.SUCCESS, response)
         );
     }
 }
