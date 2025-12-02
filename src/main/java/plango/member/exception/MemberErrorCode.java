@@ -12,6 +12,8 @@ public enum MemberErrorCode {
     INVALID_MEMBER_STATUS(HttpStatus.BAD_REQUEST, "Invalid member status"),
 
     DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "이미 사용 중인 닉네임입니다."),
+    DUPLICATE_LOGIN_ID(HttpStatus.BAD_REQUEST, "이미 사용 중인 아이디입니다."),
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "이미 사용 중인 이메일입니다."),
     PASSWORD_CHANGE_NOT_ALLOWED_FOR_SOCIAL_MEMBER(HttpStatus.BAD_REQUEST, "카카오 로그인 회원은 비밀번호를 변경할 수 없습니다."),
     INVALID_CURRENT_PASSWORD(HttpStatus.BAD_REQUEST, "현재 비밀번호가 일치하지 않습니다."),
     NEW_PASSWORD_CONFIRM_NOT_MATCH(HttpStatus.BAD_REQUEST, "새 비밀번호 확인이 일치하지 않습니다."),
