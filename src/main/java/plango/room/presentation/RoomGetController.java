@@ -39,10 +39,10 @@ public class RoomGetController {
     @GetMapping("/{roomId}")
     @Operation(summary = "여행방 상세 조회")
     public CommonResponse<RoomDetailResponse> getRoomDetail(
-            @RequestHeader("X-MEMBER-ID") Long memberId,
-            @PathVariable Long roomId
+            @PathVariable Long roomId,
+            @RequestHeader("X-MEMBER-ID") Long memberId
     ) {
-        RoomDetailResponse response = getRoomDetailUseCase.execute(memberId, roomId);
+        RoomDetailResponse response = getRoomDetailUseCase.execute(roomId, memberId);
         return CommonResponse.success(ResponseMessage.ROOM_DETAIL_GET_SUCCESS, response);
     }
 }
