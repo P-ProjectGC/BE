@@ -2,6 +2,8 @@ package plango.member.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,6 +39,10 @@ public class Member extends BaseTimeEntity {
     @Column(length = 255)
     private String profileImageUrl;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "login_type", nullable = false, length = 20)
+    private LoginType loginType;
+
     public static Member createKakaoMember(
             String email,
             String nickname,
@@ -47,6 +53,7 @@ public class Member extends BaseTimeEntity {
         member.name = nickname;
         member.nickname = nickname;
         member.profileImageUrl = profileImageUrl;
+        member.loginType = LoginType.KAKAO;
         return member;
     }
 
@@ -63,6 +70,7 @@ public class Member extends BaseTimeEntity {
         member.email = email;
         member.password = password;
         member.nickname = nickname;
+        member.loginType = LoginType.NORMAL;
         return member;
     }
 
