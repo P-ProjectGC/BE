@@ -8,4 +8,10 @@ import plango.chat.domain.entity.ChatMessage;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
 
     List<ChatMessage> findByRoomIdOrderByIdDesc(Long roomId, Pageable pageable);
+
+    List<ChatMessage> findByRoomIdAndIdLessThanOrderByIdDesc(
+            Long roomId,
+            Long id,
+            Pageable pageable
+    );
 }

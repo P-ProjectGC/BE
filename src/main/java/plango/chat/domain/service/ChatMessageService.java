@@ -31,4 +31,23 @@ public class ChatMessageService {
         );
         return chatMessageRepository.findByRoomIdOrderByIdDesc(roomId, pageRequest);
     }
+
+    public List<ChatMessage> getMessagesBefore(
+            Long roomId,
+            Long beforeMessageId,
+            int size
+    ) {
+        int pageSize = size > 0 ? size : DEFAULT_PAGE_SIZE;
+
+        PageRequest pageRequest = PageRequest.of(
+                0,
+                pageSize,
+                Sort.by(Sort.Direction.DESC, "id")
+        );
+        return chatMessageRepository.findByRoomIdAndIdLessThanOrderByIdDesc(
+                roomId,
+                beforeMessageId,
+                pageRequest
+        );
+    }
 }
