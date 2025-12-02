@@ -39,7 +39,7 @@ public class TripReminderScheduler {
         // 2) 방마다 멤버에게 리마인드 전송
         for (Room room : rooms) {
 
-            List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(room.getId());
+            List<RoomMember> roomMembers = roomMemberRepository.findByRoom_Id(room.getId());
 
             for (RoomMember roomMember : roomMembers) {
                 Long memberId = roomMember.getMember().getId();

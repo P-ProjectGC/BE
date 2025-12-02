@@ -13,6 +13,8 @@ import plango.room.domain.entity.RoomSchedule;
 import plango.room.domain.repository.RoomPlaceRepository;
 import plango.room.domain.repository.RoomRepository;
 import plango.room.domain.repository.RoomScheduleRepository;
+import plango.room.domain.repository.RoomMemberRepository;
+import plango.room.domain.entity.RoomRole;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +24,10 @@ public class RoomScheduleService {
     private final RoomRepository roomRepository;
     private final RoomPlaceRepository roomPlaceRepository;
     private final RoomScheduleRepository roomScheduleRepository;
+    private final RoomMemberRepository roomMemberRepository;
 
     public RoomSchedule createSchedule(
+            Long memberId,
             Long roomId,
             Long roomPlaceId,
             int dayIndex,
@@ -31,6 +35,8 @@ public class RoomScheduleService {
             LocalTime endTime,
             String memo
     ) {
+
+        validateHost(roomId, memberId);
 
         Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOT_FOUND));
@@ -69,10 +75,17 @@ public class RoomScheduleService {
         return roomScheduleRepository.findAllByRoomIdAndDayIndexOrderByStartTimeAsc(roomId, dayIndex);
     }
 
-    public void updateSchedule(Long scheduleId,
+    public void updateSchedule(Long memberId,
+                               Long scheduleId,
                                LocalTime startTime,
                                LocalTime endTime,
                                String memo) {
+
+        Long roomId = roomScheduleRepository.findById(scheduleId)
+            .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_SCHEDULE_NOT_FOUND))
+            .getRoom()
+            .getId();
+        validateHost(roomId, memberId);
 
         RoomSchedule roomSchedule = roomScheduleRepository.findById(scheduleId)
             .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_SCHEDULE_NOT_FOUND));
@@ -86,12 +99,29 @@ public class RoomScheduleService {
         }
     }
 
-    public void deleteSchedule(Long scheduleId) {
+    public void deleteSchedule(Long memberId, Long scheduleId) {
+
+        Long roomId = roomScheduleRepository.findById(scheduleId)
+            .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_SCHEDULE_NOT_FOUND))
+            .getRoom()
+            .getId();
+        validateHost(roomId, memberId);
 
         RoomSchedule roomSchedule = roomScheduleRepository.findById(scheduleId)
             .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_SCHEDULE_NOT_FOUND));
 
         roomScheduleRepository.delete(roomSchedule);
+    }
+
+    private void validateHost(Long roomId, Long memberId) {
+        boolean isHost = roomMemberRepository.existsByRoom_IdAndMemberIdAndRole(
+                roomId,
+                memberId,
+                RoomRole.OWNER
+        );
+        if (!isHost) {
+            throw new BusinessException(ErrorCode.ROOM_HOST_ONLY);
+        }
     }
 
     private int calculateNextSortOrder(Long roomId, int dayIndex) {

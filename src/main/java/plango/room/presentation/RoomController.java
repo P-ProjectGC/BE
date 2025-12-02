@@ -43,9 +43,10 @@ public class RoomController {
     @Operation(summary = "여행방 수정", description = "여행방 멤버, 방장, 방 정보를 수정합니다.")
     public CommonResponse<RoomUpdateResponse> updateRoom(
             @PathVariable Long roomId,
+            @RequestHeader("X-MEMBER-ID") Long memberId,
             @Valid @RequestBody RoomUpdateRequest request
     ) {
-        RoomUpdateResponse response = updateRoomUseCase.updateRoom(roomId, request);
+        RoomUpdateResponse response = updateRoomUseCase.updateRoom(roomId, memberId, request);
         return CommonResponse.success(ResponseMessage.SUCCESS, response);
     }
 }

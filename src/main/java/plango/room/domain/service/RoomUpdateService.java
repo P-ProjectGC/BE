@@ -13,6 +13,7 @@ import plango.member.domain.repository.MemberRepository;
 import plango.room.application.dto.request.RoomUpdateRequest;
 import plango.room.domain.entity.Room;
 import plango.room.domain.entity.RoomMember;
+import plango.room.domain.entity.RoomRole;
 import plango.room.domain.repository.RoomMemberRepository;
 import plango.room.domain.repository.RoomRepository;
 
@@ -25,7 +26,20 @@ public class RoomUpdateService {
     private final RoomMemberRepository roomMemberRepository;
     private final MemberRepository memberRepository;
 
-    public Room updateRoom(Long roomId, RoomUpdateRequest request) {
+    public Room updateRoom(Long roomId, Long memberId, RoomUpdateRequest request) {
+        boolean isHost = roomMemberRepository.existsByRoom_IdAndMemberIdAndRole(
+                roomId,
+                memberId,
+                RoomRole.OWNER
+        );
+
+        if (!isHost) {
+            throw new BusinessException(
+                    ErrorCode.ROOM_HOST_ONLY.getStatus().value(),
+                    ErrorCode.ROOM_HOST_ONLY.getMessage()
+            );
+        }
+
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOT_FOUND.getStatus().value(), ErrorCode.ROOM_NOT_FOUND.getMessage()));
 
@@ -83,22 +97,35 @@ public class RoomUpdateService {
             }
 
             for (Member member : addedMembers) {
-                RoomMember roomMember = RoomMember.create(room, member);
+                RoomMember roomMember = RoomMember.createMember(room, member);
                 roomMemberRepository.save(roomMember);
             }
         }
     }
 
-    private void updateHost(Room room, Long hostId) {
-        boolean exists = roomMemberRepository.existsByRoomAndMemberId(room, hostId);
+    private void updateHost(Room room, Long newHostId) {
 
-        if (!exists) {
-            throw new BusinessException(ErrorCode.ROOM_HOST_NOT_IN_MEMBERS.getStatus().value(), ErrorCode.ROOM_HOST_NOT_IN_MEMBERS.getMessage());
-        }
+        RoomMember currentHost = roomMemberRepository.findByRoom_IdAndRole(
+                room.getId(),
+                plango.room.domain.entity.RoomRole.OWNER
+        ).orElseThrow(() ->
+                new BusinessException(
+                        ErrorCode.ROOM_HOST_NOT_IN_MEMBERS.getStatus().value(),
+                        ErrorCode.ROOM_HOST_NOT_IN_MEMBERS.getMessage()
+                )
+        );
 
-        Member owner = memberRepository.findById(hostId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND.getStatus().value(), ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        RoomMember newHost = roomMemberRepository.findByRoom_IdAndMemberId(
+                room.getId(),
+                newHostId
+        ).orElseThrow(() ->
+                new BusinessException(
+                        ErrorCode.MEMBER_NOT_FOUND.getStatus().value(),
+                        ErrorCode.MEMBER_NOT_FOUND.getMessage()
+                )
+        );
 
-        room.updateOwner(owner);
+        currentHost.changeRole(plango.room.domain.entity.RoomRole.MEMBER);
+        newHost.changeRole(plango.room.domain.entity.RoomRole.OWNER);
     }
 }
