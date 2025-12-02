@@ -93,4 +93,9 @@ public class FriendService {
             throw new FriendException(FriendErrorCode.FRIEND_REQUEST_ALREADY_EXISTS);
         }
     }
+
+    @Transactional
+    public void deleteAllByMember(Member member) {
+        friendRepository.deleteAllByRequesterOrReceiver(member, member);
+    }
 }

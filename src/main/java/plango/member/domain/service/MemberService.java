@@ -93,4 +93,11 @@ public class MemberService {
         Member member = getById(memberId);
         member.updateProfile(nickname, profileImageUrl);
     }
+
+    @Transactional
+    public void deleteById(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+        memberRepository.delete(member);
+    }
 }
