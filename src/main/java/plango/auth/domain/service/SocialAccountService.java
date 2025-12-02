@@ -48,4 +48,9 @@ public class SocialAccountService {
         SocialAccount socialAccount = SocialAccount.createKakaoAccount(providerUserId, member);
         return socialAccountRepository.save(socialAccount);
     }
+
+    @Transactional
+    public void deleteByMemberId(Long memberId) {
+        socialAccountRepository.deleteByMemberId(memberId);
+    }
 }

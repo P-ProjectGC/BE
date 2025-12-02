@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
 import plango.member.application.dto.request.MemberProfileUpdateRequest;
@@ -15,6 +16,7 @@ import plango.member.application.dto.response.MemberProfileResponse;
 import plango.member.application.usecase.GetMyProfileUseCase;
 import plango.member.application.usecase.UpdateMyProfileUseCase;
 import plango.member.application.usecase.ChangePasswordUseCase;
+import plango.member.application.usecase.MemberWithdrawUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -28,6 +30,7 @@ public class MemberController {
     private final GetMyProfileUseCase getMyProfileUseCase;
     private final UpdateMyProfileUseCase updateMyProfileUseCase;
     private final ChangePasswordUseCase changePasswordUseCase;
+    private final MemberWithdrawUseCase memberWithdrawUseCase;
 
     @Operation(summary = "프로필 조회", description = "memberId를 기준으로 프로필 정보를 조회합니다.")
     @GetMapping("/{memberId}")
@@ -50,6 +53,20 @@ public class MemberController {
         updateMyProfileUseCase.execute(memberId, request);
         return CommonResponse.success(
                 ResponseMessage.MEMBER_PROFILE_UPDATE_SUCCESS
+        );
+    }
+
+    @Operation(
+            summary = "회원 탈퇴",
+            description = "회원의 계정 및 연관 데이터를 모두 삭제합니다. (소셜 계정, 친구 관계, 여행방 등)"
+    )
+    @DeleteMapping("/{memberId}")
+    public CommonResponse<Void> withdraw(
+            @PathVariable Long memberId
+    ) {
+        memberWithdrawUseCase.execute(memberId);
+        return CommonResponse.success(
+                ResponseMessage.MEMBER_WITHDRAW_SUCCESS
         );
     }
 

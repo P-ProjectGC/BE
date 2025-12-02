@@ -11,6 +11,7 @@ public enum ResponseMessage {
     SUCCESS(0, "성공"),
 
     MEMBER_SIGN_UP_SUCCESS(0, "회원가입 성공"),
+    MEMBER_WITHDRAW_SUCCESS(0, "회원 탈퇴 성공"),
 
     MEMBER_NICKNAME_CHECK_SUCCESS(0, "닉네임 중복 확인 성공"),
     MEMBER_LOGIN_ID_CHECK_SUCCESS(0, "아이디 중복 확인 성공"),

@@ -17,4 +17,6 @@ public interface SocialAccountRepository extends JpaRepository<SocialAccount, Lo
             String provider,
             Collection<String> providerUserIds
     );
+
+    void deleteByMemberId(Long memberId);
 }
