@@ -29,6 +29,11 @@ public enum ResponseMessage {
     // ===== 닉네임 =====
     NICKNAME_UPDATE_SUCCESS(0, "닉네임 수정 성공"),
     NICKNAME_CREATE_SUCCESS(0, "닉네임 생성 성공"),
+
+    // ===== 여행방 기본 조회 =====
+    ROOM_LIST_GET_SUCCESS(0, "여행방 목록 조회 성공"),
+    ROOM_DETAIL_GET_SUCCESS(0, "여행방 상세 조회 성공"),
+
     // ===== 알림 =====
     NOTIFICATION_SETTING_READ_SUCCESS(0,"알림 설정 조회 성공"),
     NOTIFICATION_SETTING_UPDATE_SUCCESS(0,"알림 설정 변경 성공"),

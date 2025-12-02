@@ -91,4 +91,7 @@ public class Room extends BaseTimeEntity {
             throw new BusinessException(ErrorCode.INVALID_DAY_INDEX);
         }
     }
+    public Long getOwnerId() {
+        return this.owner != null ? this.owner.getId() : null;
+    }
 }
