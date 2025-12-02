@@ -17,9 +17,10 @@ public class RoomScheduleCommandUseCase {
 
     private final RoomScheduleService roomScheduleService;
 
-    public ScheduleCreateResponse createSchedule(Long roomId, ScheduleCreateRequest request) {
+    public ScheduleCreateResponse createSchedule(Long memberId, Long roomId, ScheduleCreateRequest request) {
 
         RoomSchedule schedule = roomScheduleService.createSchedule(
+            memberId,
             roomId,
             request.roomPlaceId(),
             request.dayIndex(),
@@ -31,7 +32,8 @@ public class RoomScheduleCommandUseCase {
         return RoomScheduleMapper.toCreateResponse(schedule);
     }
 
-    public void updateSchedule(Long scheduleId,
+    public void updateSchedule(Long memberId,
+                               Long scheduleId,
                                String startTime,
                                String endTime,
                                String memo) {
@@ -39,11 +41,10 @@ public class RoomScheduleCommandUseCase {
         LocalTime start = startTime != null ? LocalTime.parse(startTime) : null;
         LocalTime end = endTime != null ? LocalTime.parse(endTime) : null;
 
-        roomScheduleService.updateSchedule(scheduleId, start, end, memo);
+        roomScheduleService.updateSchedule(memberId, scheduleId, start, end, memo);
     }
 
-    public void deleteSchedule(Long scheduleId) {
-        roomScheduleService.deleteSchedule(scheduleId);
+    public void deleteSchedule(Long memberId, Long scheduleId) {
+        roomScheduleService.deleteSchedule(memberId, scheduleId);
     }
 }
-

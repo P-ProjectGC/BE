@@ -17,12 +17,12 @@ public class RoomMemberSaveService {
     private final RoomMemberRepository roomMemberRepository;
 
     public RoomMember addOwner(Room room, Member owner) {
-        RoomMember roomMember = new RoomMember(room, owner, RoomRole.OWNER);
+        RoomMember roomMember = RoomMember.createOwner(room, owner);
         return roomMemberRepository.save(roomMember);
     }
 
     public RoomMember addMember(Room room, Member member) {
-        RoomMember roomMember = new RoomMember(room, member, RoomRole.MEMBER);
+        RoomMember roomMember = RoomMember.createMember(room, member);
         return roomMemberRepository.save(roomMember);
     }
 }

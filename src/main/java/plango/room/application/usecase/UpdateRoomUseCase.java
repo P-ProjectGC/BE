@@ -15,9 +15,9 @@ public class UpdateRoomUseCase {
     private final RoomUpdateService roomUpdateService;
     private final RoomMapper roomMapper;
 
-    public RoomUpdateResponse updateRoom(Long roomId, RoomUpdateRequest request) {
-        // 1. 도메인 서비스에 위임해서 엔티티 수정
-        Room updatedRoom = roomUpdateService.updateRoom(roomId, request);
+    public RoomUpdateResponse updateRoom(Long roomId, Long memberId, RoomUpdateRequest request) {
+        // 1. 도메인 서비스에 위임해서 엔티티 수정 (요청자=memberId 기준으로 권한 검사)
+        Room updatedRoom = roomUpdateService.updateRoom(roomId, memberId, request);
 
         // 2. 엔티티 → Response DTO 변환
         return roomMapper.toRoomUpdateResponse(updatedRoom);

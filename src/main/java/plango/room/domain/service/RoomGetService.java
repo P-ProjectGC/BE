@@ -41,7 +41,7 @@ public class RoomGetService {
     }
 
     public List<RoomMember> getRoomMembersByRoomId(Long roomId) {
-        return roomMemberRepository.findByRoomId(roomId);
+        return roomMemberRepository.findByRoom_Id(roomId);
     }
 
     /**

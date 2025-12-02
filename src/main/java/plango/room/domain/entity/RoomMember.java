@@ -37,7 +37,7 @@ public class RoomMember extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private RoomRole role;
 
-    public RoomMember(
+    private RoomMember(
             Room room,
             Member member,
             RoomRole role
@@ -47,8 +47,16 @@ public class RoomMember extends BaseTimeEntity {
         this.role = role;
     }
 
-    public static RoomMember create(Room room, Member member) {
+    public static RoomMember createOwner(Room room, Member member) {
+        return new RoomMember(room, member, RoomRole.OWNER);
+    }
+
+    public static RoomMember createMember(Room room, Member member) {
         return new RoomMember(room, member, RoomRole.MEMBER);
+    }
+
+    public void changeRole(RoomRole role) {
+        this.role = role;
     }
 
     void setRoom(Room room) {

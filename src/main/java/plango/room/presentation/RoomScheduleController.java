@@ -27,9 +27,10 @@ public class RoomScheduleController {
     @Operation(summary = "일정 생성", description = "특정 날짜(dayIndex)에 일정을 생성합니다.")
     public CommonResponse<ScheduleCreateResponse> createSchedule(
             @PathVariable Long roomId,
+            @RequestHeader("X-MEMBER-ID") Long memberId,
             @Valid @RequestBody ScheduleCreateRequest request
     ) {
-        ScheduleCreateResponse response = roomScheduleCommandUseCase.createSchedule(roomId, request);
+        ScheduleCreateResponse response = roomScheduleCommandUseCase.createSchedule(memberId, roomId, request);
         return CommonResponse.success(ResponseMessage.ROOM_SCHEDULE_CREATE_SUCCESS, response);
     }
 
@@ -47,20 +48,22 @@ public class RoomScheduleController {
     @Operation(summary = "일정 수정", description = "시작/종료 시간 또는 메모를 수정합니다.")
     public CommonResponse<Void> updateSchedule(
             @PathVariable Long scheduleId,
+            @RequestHeader("X-MEMBER-ID") Long memberId,
             @RequestParam(required = false) String startTime,
             @RequestParam(required = false) String endTime,
             @RequestParam(required = false) String memo
     ) {
-        roomScheduleCommandUseCase.updateSchedule(scheduleId, startTime, endTime, memo);
+        roomScheduleCommandUseCase.updateSchedule(memberId, scheduleId, startTime, endTime, memo);
         return CommonResponse.success(ResponseMessage.ROOM_SCHEDULE_UPDATE_SUCCESS);
     }
 
     @DeleteMapping("/{scheduleId}")
     @Operation(summary = "일정 삭제", description = "일정을 삭제합니다.")
     public CommonResponse<Void> deleteSchedule(
-            @PathVariable Long scheduleId
+            @PathVariable Long scheduleId,
+            @RequestHeader("X-MEMBER-ID") Long memberId
     ) {
-        roomScheduleCommandUseCase.deleteSchedule(scheduleId);
+        roomScheduleCommandUseCase.deleteSchedule(memberId, scheduleId);
         return CommonResponse.success(ResponseMessage.ROOM_SCHEDULE_DELETE_SUCCESS);
     }
 }
