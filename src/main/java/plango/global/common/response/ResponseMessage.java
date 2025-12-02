@@ -51,7 +51,11 @@ public enum ResponseMessage {
     FRIEND_TARGET_NOT_FOUND(0, "해당 닉네임의 사용자를 찾을 수 없습니다."),
     FRIEND_ACCEPT_SUCCESS(0, "친구 요청 수락 성공"),
     FRIEND_REJECT_SUCCESS(0, "친구 요청 거절 성공"),
-    FRIEND_CANCEL_SUCCESS(0, "친구 요청 취소 성공");
+    FRIEND_CANCEL_SUCCESS(0, "친구 요청 취소 성공"),
+
+    // ===== 채팅 =====
+    CHAT_MESSAGE_SEND_SUCCESS(0, "채팅 메시지 전송 성공"),
+    CHAT_MESSAGE_LIST_GET_SUCCESS(0, "채팅 메시지 목록 조회 성공");
 
     private final int code;
     private final String message;
