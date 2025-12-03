@@ -11,14 +11,24 @@ import plango.member.domain.entity.Member;
 public class KakaoAuthMapper {
 
     private static String createTempNickname() {
-        String uuid = UUID.randomUUID().toString().replace("-", "");
+        String uuid = UUID.randomUUID()
+                .toString()
+                .replace("-", "");
+
         return "KAKAO_TMP_" + uuid.substring(0, 12);
+    }
+
+    private static String createRandomToken() {
+        return UUID.randomUUID()
+                .toString()
+                .replace("-", "");
     }
 
     public static Member toMember(KakaoUserInfoResponse kakaoUserInfo) {
         String email = kakaoUserInfo.getEmail();
         String profileImageUrl = kakaoUserInfo.getProfileImageUrl();
         String tempNickname = createTempNickname();
+
         return Member.createKakaoMember(
                 email,
                 tempNickname,
@@ -26,17 +36,27 @@ public class KakaoAuthMapper {
         );
     }
 
-    public static KakaoLoginResponse toKakaoLoginResponse(Member member, boolean newMember) {
+    public static KakaoLoginResponse toKakaoLoginResponse(
+            Member member,
+            boolean newMember
+    ) {
         String nickname = null;
+
         if (!newMember) {
             nickname = member.getNickname();
         }
+
+        String accessToken = createRandomToken();
+        String refreshToken = createRandomToken();
+
         return KakaoLoginResponse.builder()
                 .memberId(member.getId())
                 .email(member.getEmail())
                 .nickname(nickname)
                 .profileImageUrl(member.getProfileImageUrl())
                 .newMember(newMember)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 }
