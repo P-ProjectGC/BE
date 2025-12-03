@@ -9,5 +9,9 @@ public record ScheduleCreateResponse(
         String startTime,
         String endTime,
         Long roomPlaceId,
-        String memo
+        String memo,
+        String placeName,
+        String address,
+        Double lat,
+        Double lng
 ) { }
