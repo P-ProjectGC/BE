@@ -8,6 +8,8 @@ public record KakaoLoginResponse(
         String email,
         String nickname,
         String profileImageUrl,
-        boolean newMember
+        boolean newMember,
+        String accessToken,
+        String refreshToken
 ) {
 }
