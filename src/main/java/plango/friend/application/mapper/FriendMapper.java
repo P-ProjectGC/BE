@@ -21,7 +21,9 @@ public class FriendMapper {
     }
 
     public FriendListItemResponse toFriendListItemResponse(Friend friend, Long currentMemberId) {
-        Member opponent = friend.getRequester().getId().equals(currentMemberId)
+        Member opponent = friend.getRequester()
+                .getId()
+                .equals(currentMemberId)
                 ? friend.getReceiver()
                 : friend.getRequester();
 
@@ -29,7 +31,9 @@ public class FriendMapper {
                 friend.getId(),
                 opponent.getId(),
                 opponent.getNickname(),
-                opponent.getProfileImageUrl()
+                opponent.getProfileImageUrl(),
+                opponent.getLoginType()
+                        .name()
         );
     }
 
