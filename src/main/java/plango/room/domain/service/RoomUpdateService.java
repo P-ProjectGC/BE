@@ -54,6 +54,50 @@ public class RoomUpdateService {
         return room;
     }
 
+    public void delegateHost(Long roomId, Long requesterId, Long newHostId) {
+        boolean isHost = roomMemberRepository.existsByRoom_IdAndMemberIdAndRole(
+                roomId,
+                requesterId,
+                RoomRole.OWNER
+        );
+
+        if (!isHost) {
+            throw new BusinessException(
+                    ErrorCode.ROOM_HOST_ONLY.getStatus().value(),
+                    ErrorCode.ROOM_HOST_ONLY.getMessage()
+            );
+        }
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new BusinessException(
+                        ErrorCode.ROOM_NOT_FOUND.getStatus().value(),
+                        ErrorCode.ROOM_NOT_FOUND.getMessage()
+                ));
+
+        RoomMember currentHost = roomMemberRepository.findByRoom_IdAndRole(
+                roomId,
+                RoomRole.OWNER
+        ).orElseThrow(() ->
+                new BusinessException(
+                        ErrorCode.ROOM_HOST_NOT_IN_MEMBERS.getStatus().value(),
+                        ErrorCode.ROOM_HOST_NOT_IN_MEMBERS.getMessage()
+                )
+        );
+
+        RoomMember newHost = roomMemberRepository.findByRoom_IdAndMemberId(
+                roomId,
+                newHostId
+        ).orElseThrow(() ->
+                new BusinessException(
+                        ErrorCode.MEMBER_NOT_FOUND.getStatus().value(),
+                        ErrorCode.MEMBER_NOT_FOUND.getMessage()
+                )
+        );
+
+        currentHost.changeRole(RoomRole.MEMBER);
+        newHost.changeRole(RoomRole.OWNER);
+    }
+
     private void validateHostIncludedInMembers(RoomUpdateRequest request) {
         if (!request.memberIds().contains(request.hostId())) {
             throw new BusinessException(ErrorCode.ROOM_HOST_NOT_IN_MEMBERS.getStatus().value(), ErrorCode.ROOM_HOST_NOT_IN_MEMBERS.getMessage());

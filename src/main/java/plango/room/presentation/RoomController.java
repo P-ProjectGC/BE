@@ -15,6 +15,7 @@ import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
 import plango.room.application.dto.request.RoomCreateRequest;
 import plango.room.application.dto.request.RoomUpdateRequest;
+import plango.room.application.dto.request.DelegateHostRequest;
 import plango.room.application.dto.response.RoomCreateResponse;
 import plango.room.application.dto.response.RoomUpdateResponse;
 import plango.room.application.usecase.CreateRoomUseCase;
@@ -48,5 +49,16 @@ public class RoomController {
     ) {
         RoomUpdateResponse response = updateRoomUseCase.updateRoom(roomId, memberId, request);
         return CommonResponse.success(ResponseMessage.SUCCESS, response);
+    }
+
+    @PatchMapping("/{roomId}/host")
+    @Operation(summary = "여행방 방장 위임", description = "현재 방장이 다른 멤버에게 방장 권한을 위임합니다.")
+    public CommonResponse<Void> delegateHost(
+            @PathVariable Long roomId,
+            @RequestHeader("X-MEMBER-ID") Long memberId,
+            @Valid @RequestBody DelegateHostRequest request
+    ) {
+        updateRoomUseCase.delegateHost(roomId, memberId, request.newHostId());
+        return CommonResponse.success(ResponseMessage.SUCCESS);
     }
 }

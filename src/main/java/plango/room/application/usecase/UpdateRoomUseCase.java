@@ -22,4 +22,8 @@ public class UpdateRoomUseCase {
         // 2. 엔티티 → Response DTO 변환
         return roomMapper.toRoomUpdateResponse(updatedRoom);
     }
+
+    public void delegateHost(Long roomId, Long requesterId, Long newHostId) {
+        roomUpdateService.delegateHost(roomId, requesterId, newHostId);
+    }
 }
