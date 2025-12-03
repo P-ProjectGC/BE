@@ -1,56 +1,75 @@
 package plango.member.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
-import plango.member.application.dto.request.MemberProfileUpdateRequest;
 import plango.member.application.dto.request.ChangePasswordRequest;
+import plango.member.application.dto.request.MemberProfileUpdateRequest;
 import plango.member.application.dto.response.MemberProfileResponse;
-import plango.member.application.usecase.GetMyProfileUseCase;
-import plango.member.application.usecase.UpdateMyProfileUseCase;
+import plango.member.application.dto.response.MemberSearchResponse;
 import plango.member.application.usecase.ChangePasswordUseCase;
+import plango.member.application.usecase.GetMyProfileUseCase;
 import plango.member.application.usecase.MemberWithdrawUseCase;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
+import plango.member.application.usecase.SearchMemberByNicknameUseCase;
+import plango.member.application.usecase.UpdateMyProfileUseCase;
 
-@Tag(name = "멤버 프로필", description = "회원 프로필 조회 및 수정 API")
+@Tag(
+        name = "멤버 프로필",
+        description = "회원 프로필 조회 및 수정 API"
+)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberController {
 
     private final GetMyProfileUseCase getMyProfileUseCase;
+
     private final UpdateMyProfileUseCase updateMyProfileUseCase;
+
     private final ChangePasswordUseCase changePasswordUseCase;
+
     private final MemberWithdrawUseCase memberWithdrawUseCase;
 
-    @Operation(summary = "프로필 조회", description = "memberId를 기준으로 프로필 정보를 조회합니다.")
+    private final SearchMemberByNicknameUseCase searchMemberByNicknameUseCase;
+
+    @Operation(
+            summary = "프로필 조회",
+            description = "memberId를 기준으로 프로필 정보를 조회합니다."
+    )
     @GetMapping("/{memberId}")
     public CommonResponse<MemberProfileResponse> getProfile(
             @PathVariable Long memberId
     ) {
         MemberProfileResponse response = getMyProfileUseCase.execute(memberId);
+
         return CommonResponse.success(
                 ResponseMessage.MEMBER_PROFILE_GET_SUCCESS,
                 response
         );
     }
 
-    @Operation(summary = "프로필 수정", description = "nickname, profileImageUrl 값을 수정합니다.")
+    @Operation(
+            summary = "프로필 수정",
+            description = "nickname, profileImageUrl 값을 수정합니다."
+    )
     @PatchMapping("/{memberId}")
     public CommonResponse<Void> updateProfile(
             @PathVariable Long memberId,
             @RequestBody @Valid MemberProfileUpdateRequest request
     ) {
         updateMyProfileUseCase.execute(memberId, request);
+
         return CommonResponse.success(
                 ResponseMessage.MEMBER_PROFILE_UPDATE_SUCCESS
         );
@@ -65,20 +84,41 @@ public class MemberController {
             @PathVariable Long memberId
     ) {
         memberWithdrawUseCase.execute(memberId);
+
         return CommonResponse.success(
                 ResponseMessage.MEMBER_WITHDRAW_SUCCESS
         );
     }
 
-    @Operation(summary = "비밀번호 변경", description = "현재 비밀번호를 검증하고 새 비밀번호로 변경합니다.")
+    @Operation(
+            summary = "비밀번호 변경",
+            description = "현재 비밀번호를 검증하고 새 비밀번호로 변경합니다."
+    )
     @PatchMapping("/{memberId}/password")
     public CommonResponse<Void> changePassword(
             @PathVariable Long memberId,
             @RequestBody @Valid ChangePasswordRequest request
     ) {
         changePasswordUseCase.execute(memberId, request);
+
         return CommonResponse.success(
                 ResponseMessage.MEMBER_PASSWORD_CHANGE_SUCCESS
+        );
+    }
+
+    @Operation(
+            summary = "사용자 닉네임 검색",
+            description = "닉네임을 기준으로 사용자 정보를 조회합니다. 친구 추가 전 검색용 API입니다."
+    )
+    @GetMapping("/search")
+    public CommonResponse<MemberSearchResponse> searchMemberByNickname(
+            @RequestParam String nickname
+    ) {
+        MemberSearchResponse response = searchMemberByNicknameUseCase.execute(nickname);
+
+        return CommonResponse.success(
+                ResponseMessage.MEMBER_SEARCH_BY_NICKNAME_SUCCESS,
+                response
         );
     }
 }
