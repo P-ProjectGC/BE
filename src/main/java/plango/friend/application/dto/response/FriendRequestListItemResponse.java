@@ -1,4 +1,12 @@
 package plango.friend.application.dto.response;
 
-public class FriendRequestListItemResponse {
+import java.time.LocalDateTime;
+
+public record FriendRequestListItemResponse(
+        Long friendId,
+        Long memberId,
+        String nickname,
+        String profileImageUrl,
+        LocalDateTime createdAt
+) {
 }

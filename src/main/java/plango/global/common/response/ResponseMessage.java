@@ -20,7 +20,7 @@ public enum ResponseMessage {
     // ===== 프로필 =====
     MEMBER_PROFILE_GET_SUCCESS(0, "프로필 조회 성공"),
     MEMBER_PROFILE_UPDATE_SUCCESS(0, "프로필 수정 성공"),
-    MEMBER_PASSWORD_CHANGE_SUCCESS(0,"비밀번호 변경에 성공했습니다."),
+    MEMBER_PASSWORD_CHANGE_SUCCESS(0, "비밀번호 변경에 성공했습니다."),
 
     // ===== 여행방 장소 (RoomPlace) =====
     ROOM_PLACE_LIST_SUCCESS(0, "위시리스트 장소 조회 성공"),
@@ -42,8 +42,8 @@ public enum ResponseMessage {
     ROOM_DETAIL_GET_SUCCESS(0, "여행방 상세 조회 성공"),
 
     // ===== 알림 =====
-    NOTIFICATION_SETTING_READ_SUCCESS(0,"알림 설정 조회 성공"),
-    NOTIFICATION_SETTING_UPDATE_SUCCESS(0,"알림 설정 변경 성공"),
+    NOTIFICATION_SETTING_READ_SUCCESS(0, "알림 설정 조회 성공"),
+    NOTIFICATION_SETTING_UPDATE_SUCCESS(0, "알림 설정 변경 성공"),
 
     // ===== 친구 요청 / 관리 =====
     FRIEND_REQUEST_CREATE_SUCCESS(0, "친구 요청 생성 성공"),
@@ -53,6 +53,9 @@ public enum ResponseMessage {
     FRIEND_ACCEPT_SUCCESS(0, "친구 요청 수락 성공"),
     FRIEND_REJECT_SUCCESS(0, "친구 요청 거절 성공"),
     FRIEND_CANCEL_SUCCESS(0, "친구 요청 취소 성공"),
+    FRIEND_LIST_GET_SUCCESS(0, "친구 목록 조회 성공"),
+    FRIEND_REQUEST_RECEIVED_LIST_GET_SUCCESS(0, "받은 친구 요청 목록 조회 성공"),
+    FRIEND_REQUEST_SENT_LIST_GET_SUCCESS(0, "보낸 친구 요청 목록 조회 성공"),
 
     // ===== 채팅 =====
     CHAT_MESSAGE_SEND_SUCCESS(0, "채팅 메시지 전송 성공"),
