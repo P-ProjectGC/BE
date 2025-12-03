@@ -1,5 +1,7 @@
 package plango.friend.domain.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +49,34 @@ public class FriendService {
         friendRepository.delete(friend);
     }
 
+    public List<Friend> getAcceptedFriends(Member member) {
+        List<Friend> requestedFriends =
+                friendRepository.findAllByRequesterAndStatus(member, FriendStatus.accepted);
+
+        List<Friend> receivedFriends =
+                friendRepository.findAllByReceiverAndStatus(member, FriendStatus.accepted);
+
+        List<Friend> result = new ArrayList<>();
+
+        result.addAll(requestedFriends);
+        result.addAll(receivedFriends);
+
+        return result;
+    }
+
+    public List<Friend> getReceivedRequestedFriends(Member member) {
+        return friendRepository.findAllByReceiverAndStatus(member, FriendStatus.requested);
+    }
+
+    public List<Friend> getSentRequestedFriends(Member member) {
+        return friendRepository.findAllByRequesterAndStatus(member, FriendStatus.requested);
+    }
+
+    @Transactional
+    public void deleteAllByMember(Member member) {
+        friendRepository.deleteAllByRequesterOrReceiver(member, member);
+    }
+
     private Friend getFriendForReceiver(Long memberId, Long friendId) {
         Friend friend = friendRepository.findById(friendId)
                 .orElseThrow(() -> new FriendException(FriendErrorCode.FRIEND_NOT_FOUND));
@@ -92,10 +122,5 @@ public class FriendService {
         if (exists) {
             throw new FriendException(FriendErrorCode.FRIEND_REQUEST_ALREADY_EXISTS);
         }
-    }
-
-    @Transactional
-    public void deleteAllByMember(Member member) {
-        friendRepository.deleteAllByRequesterOrReceiver(member, member);
     }
 }
