@@ -1,5 +1,7 @@
 package plango.member.domain.service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,5 +25,17 @@ public class MemberQueryService {
     public Member getByNickname(String nickname) {
         return memberRepository.findByNickname(nickname)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    public List<Member> searchByNicknameContaining(String keyword) {
+        if (keyword == null) {
+            return Collections.emptyList();
+        }
+
+        if (keyword.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        return memberRepository.findAllByNicknameContaining(keyword);
     }
 }

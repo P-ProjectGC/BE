@@ -23,6 +23,7 @@ import plango.member.application.usecase.GetMyProfileUseCase;
 import plango.member.application.usecase.MemberWithdrawUseCase;
 import plango.member.application.usecase.SearchMemberByNicknameUseCase;
 import plango.member.application.usecase.UpdateMyProfileUseCase;
+import java.util.List;
 
 @Tag(
         name = "멤버 프로필",
@@ -108,17 +109,17 @@ public class MemberController {
 
     @Operation(
             summary = "사용자 닉네임 검색",
-            description = "닉네임을 기준으로 사용자 정보를 조회합니다. 친구 추가 전 검색용 API입니다."
+            description = "닉네임 일부를 입력하면 해당 문자열을 포함하는 사용자 목록을 조회합니다. 친구 추가 전 검색용 API입니다."
     )
     @GetMapping("/search")
-    public CommonResponse<MemberSearchResponse> searchMemberByNickname(
+    public CommonResponse<List<MemberSearchResponse>> searchMemberByNickname(
             @RequestParam String nickname
     ) {
-        MemberSearchResponse response = searchMemberByNicknameUseCase.execute(nickname);
+        List<MemberSearchResponse> responses = searchMemberByNicknameUseCase.execute(nickname);
 
         return CommonResponse.success(
                 ResponseMessage.MEMBER_SEARCH_BY_NICKNAME_SUCCESS,
-                response
+                responses
         );
     }
 }
