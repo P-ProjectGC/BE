@@ -17,6 +17,9 @@ public enum ResponseMessage {
     MEMBER_LOGIN_ID_CHECK_SUCCESS(0, "아이디 중복 확인 성공"),
     MEMBER_EMAIL_CHECK_SUCCESS(0, "이메일 중복 확인 성공"),
 
+    // ===== 멤버 검색 =====
+    MEMBER_SEARCH_BY_NICKNAME_SUCCESS(0, "사용자 검색 성공"),
+
     // ===== 프로필 =====
     MEMBER_PROFILE_GET_SUCCESS(0, "프로필 조회 성공"),
     MEMBER_PROFILE_UPDATE_SUCCESS(0, "프로필 수정 성공"),
