@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import plango.friend.application.dto.response.FriendRequestListItemResponse;
 import plango.friend.application.dto.response.FriendResponse;
 import plango.friend.application.usecase.FriendAcceptUseCase;
 import plango.friend.application.usecase.FriendCancelUseCase;
+import plango.friend.application.usecase.FriendDeleteUseCase;
 import plango.friend.application.usecase.FriendListQueryUseCase;
 import plango.friend.application.usecase.FriendReceivedRequestListQueryUseCase;
 import plango.friend.application.usecase.FriendRejectUseCase;
@@ -49,6 +51,8 @@ public class FriendController {
     private final FriendReceivedRequestListQueryUseCase friendReceivedRequestListQueryUseCase;
 
     private final FriendSentRequestListQueryUseCase friendSentRequestListQueryUseCase;
+
+    private final FriendDeleteUseCase friendDeleteUseCase;
 
     @Operation(
             summary = "친구 목록 조회",
@@ -164,6 +168,22 @@ public class FriendController {
 
         return CommonResponse.success(
                 ResponseMessage.FRIEND_CANCEL_SUCCESS
+        );
+    }
+
+    @Operation(
+            summary = "친구 삭제",
+            description = "친구 목록에서 선택한 친구를 삭제합니다."
+    )
+    @DeleteMapping("/{friendId}")
+    public CommonResponse<Void> deleteFriend(
+            @RequestHeader("X-Member-Id") Long memberId,
+            @PathVariable Long friendId
+    ) {
+        friendDeleteUseCase.execute(memberId, friendId);
+
+        return CommonResponse.success(
+                ResponseMessage.FRIEND_DELETE_SUCCESS
         );
     }
 }
