@@ -4,6 +4,7 @@ public record FriendListItemResponse(
         Long friendId,
         Long memberId,
         String nickname,
-        String profileImageUrl
+        String profileImageUrl,
+        String loginType
 ) {
 }
