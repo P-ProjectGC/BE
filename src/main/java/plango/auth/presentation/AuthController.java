@@ -20,6 +20,8 @@ import plango.auth.application.dto.request.MemberLoginRequest;
 import plango.auth.application.dto.request.MemberSignUpRequest;
 import plango.auth.application.dto.request.FindLoginIdRequest;
 import plango.auth.application.dto.request.VerifyLoginIdCodeRequest;
+import plango.auth.application.dto.request.FindPasswordByLoginIdRequest;
+import plango.auth.application.dto.request.ResetPasswordRequest;
 import plango.auth.application.dto.response.DuplicateCheckResponse;
 import plango.auth.application.dto.response.KakaoLoginResponse;
 import plango.auth.application.dto.response.MemberSignUpResponse;
@@ -36,6 +38,8 @@ import plango.auth.application.usecase.NicknameDuplicateCheckUseCase;
 import plango.auth.application.usecase.FindLoginIdUseCase;
 import plango.auth.application.usecase.SendLoginIdVerificationCodeUseCase;
 import plango.auth.application.usecase.VerifyLoginIdCodeUseCase;
+import plango.auth.application.usecase.CheckLoginIdForPasswordResetUseCase;
+import plango.auth.application.usecase.ResetPasswordUseCase;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
 
@@ -55,7 +59,8 @@ public class AuthController {
     private final FindLoginIdUseCase findLoginIdUseCase;
     private final SendLoginIdVerificationCodeUseCase sendLoginIdVerificationCodeUseCase;
     private final VerifyLoginIdCodeUseCase verifyLoginIdCodeUseCase;
-
+    private final CheckLoginIdForPasswordResetUseCase checkLoginIdForPasswordResetUseCase;
+    private final ResetPasswordUseCase resetPasswordUseCase;
 
     @Operation(summary = "일반 회원가입", description = "이름, 닉네임, 아이디, 비밀번호, 이메일로 회원가입합니다.")
     @PostMapping("/signup")
@@ -65,6 +70,7 @@ public class AuthController {
             MemberSignUpRequest request
     ) {
         MemberSignUpResponse response = memberSignUpUseCase.execute(request);
+
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.MEMBER_SIGN_UP_SUCCESS, response)
         );
@@ -78,6 +84,7 @@ public class AuthController {
             MemberLoginRequest request
     ) {
         KakaoLoginResponse response = memberLoginUseCase.execute(request);
+
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.SUCCESS, response)
         );
@@ -91,6 +98,7 @@ public class AuthController {
             KakaoLoginRequest request
     ) {
         KakaoLoginResponse response = kakaoLoginUseCase.execute(request);
+
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.SUCCESS, response)
         );
@@ -100,6 +108,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<CommonResponse<Void>> logout() {
         logoutUseCase.execute();
+
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.SUCCESS)
         );
@@ -114,6 +123,7 @@ public class AuthController {
             String nickname
     ) {
         DuplicateCheckResponse response = nicknameDuplicateCheckUseCase.execute(nickname);
+
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.MEMBER_NICKNAME_CHECK_SUCCESS, response)
         );
@@ -131,6 +141,7 @@ public class AuthController {
             String loginId
     ) {
         DuplicateCheckResponse response = loginIdDuplicateCheckUseCase.execute(loginId);
+
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.MEMBER_LOGIN_ID_CHECK_SUCCESS, response)
         );
@@ -145,6 +156,7 @@ public class AuthController {
             String email
     ) {
         DuplicateCheckResponse response = emailDuplicateCheckUseCase.execute(email);
+
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.MEMBER_EMAIL_CHECK_SUCCESS, response)
         );
@@ -169,8 +181,7 @@ public class AuthController {
 
     @Operation(
             summary = "아이디 찾기 추가 인증번호 발송",
-            description = "아이디를 찾기 위해 입력한 이메일로 6자리 인증번호를 전송합니다. "
-                    + "테스트 편의를 위해 응답에 인증번호가 함께 포함됩니다."
+            description = "아이디를 찾기 위해 입력한 이메일로 6자리 인증번호를 전송합니다. 테스트 편의를 위해 응답에 인증번호가 함께 포함됩니다."
     )
     @PostMapping("/find-id/send-code")
     public ResponseEntity<CommonResponse<SendLoginIdVerificationCodeResponse>> sendFindIdCode(
@@ -201,6 +212,40 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.SUCCESS, response)
+        );
+    }
+
+    @Operation(
+            summary = "비밀번호 찾기 - 아이디 확인",
+            description = "입력한 아이디가 일반 회원가입 사용자이면서 존재하는지 확인합니다."
+    )
+    @PostMapping("/find-password/check-login-id")
+    public ResponseEntity<CommonResponse<Void>> checkLoginIdForPasswordReset(
+            @Valid
+            @RequestBody
+            FindPasswordByLoginIdRequest request
+    ) {
+        checkLoginIdForPasswordResetUseCase.execute(request);
+
+        return ResponseEntity.ok(
+                CommonResponse.success(ResponseMessage.SUCCESS)
+        );
+    }
+
+    @Operation(
+            summary = "비밀번호 찾기 - 새 비밀번호 설정",
+            description = "아이디를 통해 새 비밀번호를 설정합니다. 카카오 로그인 회원은 사용할 수 없습니다."
+    )
+    @PostMapping("/find-password/reset")
+    public ResponseEntity<CommonResponse<Void>> resetPassword(
+            @Valid
+            @RequestBody
+            ResetPasswordRequest request
+    ) {
+        resetPasswordUseCase.execute(request);
+
+        return ResponseEntity.ok(
+                CommonResponse.success(ResponseMessage.MEMBER_PASSWORD_CHANGE_SUCCESS)
         );
     }
 }

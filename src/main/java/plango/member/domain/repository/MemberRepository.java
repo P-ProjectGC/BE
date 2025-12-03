@@ -3,6 +3,7 @@ package plango.member.domain.repository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import plango.member.domain.entity.Member;
+import plango.member.domain.entity.LoginType;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -11,6 +12,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
 
     Optional<Member> findByNickname(String nickname);
+
+    Optional<Member> findByLoginIdAndLoginType(String loginId, LoginType loginType);
 
     boolean existsByLoginId(String loginId);
 
