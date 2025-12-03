@@ -34,8 +34,8 @@ import plango.global.common.response.ResponseMessage;
         description = "친구 요청 및 관리 API"
 )
 @RestController
-@RequestMapping("/api/friends")
 @RequiredArgsConstructor
+@RequestMapping("/api/friends")
 public class FriendController {
 
     private final FriendRequestUseCase friendRequestUseCase;
@@ -63,7 +63,8 @@ public class FriendController {
             @RequestHeader("X-Member-Id") Long memberId,
             @RequestParam(required = false) String nickname
     ) {
-        List<FriendListItemResponse> responses = friendListQueryUseCase.execute(memberId, nickname);
+        List<FriendListItemResponse> responses =
+                friendListQueryUseCase.execute(memberId, nickname);
 
         return CommonResponse.success(
                 ResponseMessage.FRIEND_LIST_GET_SUCCESS,
@@ -109,7 +110,7 @@ public class FriendController {
             summary = "친구 요청",
             description = "닉네임으로 친구 요청을 보냅니다."
     )
-    @PostMapping("/request")
+    @PostMapping
     public CommonResponse<FriendResponse> requestFriend(
             @RequestHeader("X-Member-Id") Long memberId,
             @Valid @RequestBody FriendRequestRequest request
