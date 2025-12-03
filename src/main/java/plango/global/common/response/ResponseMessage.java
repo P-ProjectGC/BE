@@ -56,6 +56,7 @@ public enum ResponseMessage {
     FRIEND_LIST_GET_SUCCESS(0, "친구 목록 조회 성공"),
     FRIEND_REQUEST_RECEIVED_LIST_GET_SUCCESS(0, "받은 친구 요청 목록 조회 성공"),
     FRIEND_REQUEST_SENT_LIST_GET_SUCCESS(0, "보낸 친구 요청 목록 조회 성공"),
+    FRIEND_DELETE_SUCCESS(0, "친구 삭제 성공"),
 
     // ===== 채팅 =====
     CHAT_MESSAGE_SEND_SUCCESS(0, "채팅 메시지 전송 성공"),

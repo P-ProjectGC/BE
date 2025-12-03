@@ -73,6 +73,30 @@ public class FriendService {
     }
 
     @Transactional
+    public void deleteFriend(Long memberId, Long friendId) {
+        Friend friend = friendRepository.findById(friendId)
+                .orElseThrow(() -> new FriendException(FriendErrorCode.FRIEND_NOT_FOUND));
+
+        boolean isRequester = friend.getRequester()
+                .getId()
+                .equals(memberId);
+
+        boolean isReceiver = friend.getReceiver()
+                .getId()
+                .equals(memberId);
+
+        if (!isRequester && !isReceiver) {
+            throw new FriendException(FriendErrorCode.FRIEND_NOT_FOUND);
+        }
+
+        if (friend.getStatus() != FriendStatus.accepted) {
+            throw new FriendException(FriendErrorCode.INVALID_FRIEND_STATUS);
+        }
+
+        friendRepository.delete(friend);
+    }
+
+    @Transactional
     public void deleteAllByMember(Member member) {
         friendRepository.deleteAllByRequesterOrReceiver(member, member);
     }
