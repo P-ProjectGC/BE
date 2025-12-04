@@ -15,7 +15,8 @@ public class MemberMapper {
                 member.getNickname(),
                 member.getEmail(),
                 member.getLoginId(),
-                member.getProfileImageUrl()
+                member.getProfileImageUrl(),
+                member.getLoginType()
         );
     }
 

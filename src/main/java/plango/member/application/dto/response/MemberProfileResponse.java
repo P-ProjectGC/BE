@@ -1,10 +1,13 @@
 package plango.member.application.dto.response;
 
+import plango.member.domain.entity.LoginType;
+
 public record MemberProfileResponse(
         Long memberId,
         String nickname,
         String email,
         String loginId,
-        String profileImageUrl
+        String profileImageUrl,
+        LoginType loginType
 ) {
 }
