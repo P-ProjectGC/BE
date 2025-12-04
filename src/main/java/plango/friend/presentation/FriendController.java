@@ -5,12 +5,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,7 +60,7 @@ public class FriendController {
     )
     @GetMapping
     public CommonResponse<List<FriendListItemResponse>> getFriends(
-            @RequestHeader("X-Member-Id") Long memberId,
+            @AuthenticationPrincipal Long memberId,
             @RequestParam(required = false) String nickname
     ) {
         List<FriendListItemResponse> responses =
@@ -78,7 +78,7 @@ public class FriendController {
     )
     @GetMapping("/requests/received")
     public CommonResponse<List<FriendRequestListItemResponse>> getReceivedFriendRequests(
-            @RequestHeader("X-Member-Id") Long memberId
+            @AuthenticationPrincipal Long memberId
     ) {
         List<FriendRequestListItemResponse> responses =
                 friendReceivedRequestListQueryUseCase.execute(memberId);
@@ -95,7 +95,7 @@ public class FriendController {
     )
     @GetMapping("/requests/sent")
     public CommonResponse<List<FriendRequestListItemResponse>> getSentFriendRequests(
-            @RequestHeader("X-Member-Id") Long memberId
+            @AuthenticationPrincipal Long memberId
     ) {
         List<FriendRequestListItemResponse> responses =
                 friendSentRequestListQueryUseCase.execute(memberId);
@@ -112,7 +112,7 @@ public class FriendController {
     )
     @PostMapping
     public CommonResponse<FriendResponse> requestFriend(
-            @RequestHeader("X-Member-Id") Long memberId,
+            @AuthenticationPrincipal Long memberId,
             @Valid @RequestBody FriendRequestRequest request
     ) {
         FriendResponse response = friendRequestUseCase.execute(memberId, request);
@@ -129,7 +129,7 @@ public class FriendController {
     )
     @PostMapping("/{friendId}/accept")
     public CommonResponse<FriendResponse> acceptFriend(
-            @RequestHeader("X-Member-Id") Long memberId,
+            @AuthenticationPrincipal Long memberId,
             @PathVariable Long friendId
     ) {
         FriendResponse response = friendAcceptUseCase.execute(memberId, friendId);
@@ -146,7 +146,7 @@ public class FriendController {
     )
     @PostMapping("/{friendId}/reject")
     public CommonResponse<Void> rejectFriend(
-            @RequestHeader("X-Member-Id") Long memberId,
+            @AuthenticationPrincipal Long memberId,
             @PathVariable Long friendId
     ) {
         friendRejectUseCase.execute(memberId, friendId);
@@ -162,7 +162,7 @@ public class FriendController {
     )
     @PostMapping("/{friendId}/cancel")
     public CommonResponse<Void> cancelFriend(
-            @RequestHeader("X-Member-Id") Long memberId,
+            @AuthenticationPrincipal Long memberId,
             @PathVariable Long friendId
     ) {
         friendCancelUseCase.execute(memberId, friendId);
@@ -178,7 +178,7 @@ public class FriendController {
     )
     @DeleteMapping("/{friendId}")
     public CommonResponse<Void> deleteFriend(
-            @RequestHeader("X-Member-Id") Long memberId,
+            @AuthenticationPrincipal Long memberId,
             @PathVariable Long friendId
     ) {
         friendDeleteUseCase.execute(memberId, friendId);

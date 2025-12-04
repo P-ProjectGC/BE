@@ -22,6 +22,7 @@ import plango.auth.application.dto.request.FindLoginIdRequest;
 import plango.auth.application.dto.request.VerifyLoginIdCodeRequest;
 import plango.auth.application.dto.request.FindPasswordByLoginIdRequest;
 import plango.auth.application.dto.request.ResetPasswordRequest;
+import plango.auth.application.dto.request.TokenReissueRequest;
 import plango.auth.application.dto.response.DuplicateCheckResponse;
 import plango.auth.application.dto.response.KakaoLoginResponse;
 import plango.auth.application.dto.response.MemberSignUpResponse;
@@ -40,10 +41,11 @@ import plango.auth.application.usecase.SendLoginIdVerificationCodeUseCase;
 import plango.auth.application.usecase.VerifyLoginIdCodeUseCase;
 import plango.auth.application.usecase.CheckLoginIdForPasswordResetUseCase;
 import plango.auth.application.usecase.ResetPasswordUseCase;
+import plango.auth.application.usecase.TokenReissueUseCase;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
 
-@Tag(name = "Auth", description = "인증 관련 API")
+@Tag(name = "Auth API", description = "인증 / 인가 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -61,6 +63,7 @@ public class AuthController {
     private final VerifyLoginIdCodeUseCase verifyLoginIdCodeUseCase;
     private final CheckLoginIdForPasswordResetUseCase checkLoginIdForPasswordResetUseCase;
     private final ResetPasswordUseCase resetPasswordUseCase;
+    private final TokenReissueUseCase tokenReissueUseCase;
 
     @Operation(summary = "일반 회원가입", description = "이름, 닉네임, 아이디, 비밀번호, 이메일로 회원가입합니다.")
     @PostMapping("/signup")
@@ -246,6 +249,26 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.MEMBER_PASSWORD_CHANGE_SUCCESS)
+        );
+    }
+
+    @Operation(
+            summary = "토큰 재발급",
+            description = "리프레시 토큰을 사용해 액세스 토큰과 리프레시 토큰을 재발급합니다."
+    )
+    @PostMapping("/token/reissue")
+    public ResponseEntity<CommonResponse<KakaoLoginResponse>> reissueToken(
+            @Valid
+            @RequestBody
+            TokenReissueRequest request
+    ) {
+        KakaoLoginResponse response = tokenReissueUseCase.execute(request);
+
+        return ResponseEntity.ok(
+                CommonResponse.success(
+                        ResponseMessage.AUTH_TOKEN_REISSUE_SUCCESS,
+                        response
+                )
         );
     }
 }
