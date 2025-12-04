@@ -18,12 +18,6 @@ public class KakaoAuthMapper {
         return "KAKAO_TMP_" + uuid.substring(0, 12);
     }
 
-    private static String createRandomToken() {
-        return UUID.randomUUID()
-                .toString()
-                .replace("-", "");
-    }
-
     public static Member toMember(KakaoUserInfoResponse kakaoUserInfo) {
         String email = kakaoUserInfo.getEmail();
         String profileImageUrl = kakaoUserInfo.getProfileImageUrl();
@@ -38,16 +32,15 @@ public class KakaoAuthMapper {
 
     public static KakaoLoginResponse toKakaoLoginResponse(
             Member member,
-            boolean newMember
+            boolean newMember,
+            String accessToken,
+            String refreshToken
     ) {
         String nickname = null;
 
         if (!newMember) {
             nickname = member.getNickname();
         }
-
-        String accessToken = createRandomToken();
-        String refreshToken = createRandomToken();
 
         return KakaoLoginResponse.builder()
                 .memberId(member.getId())

@@ -64,7 +64,9 @@ public enum ResponseMessage {
     // ===== 채팅 =====
     CHAT_MESSAGE_SEND_SUCCESS(0, "채팅 메시지 전송 성공"),
     CHAT_MESSAGE_LIST_GET_SUCCESS(0, "채팅 메시지 목록 조회 성공"),
-    CHAT_MESSAGE_HISTORY_BEFORE_GET_SUCCESS(0, "채팅 이전 메시지 목록 조회 성공");
+    CHAT_MESSAGE_HISTORY_BEFORE_GET_SUCCESS(0, "채팅 이전 메시지 목록 조회 성공"),
+
+    AUTH_TOKEN_REISSUE_SUCCESS(0, "토큰 재발급 성공");
 
     private final int code;
     private final String message;

@@ -8,6 +8,7 @@ import plango.auth.application.dto.response.KakaoLoginResponse;
 import plango.auth.application.dto.response.KakaoUserInfoResponse;
 import plango.auth.application.mapper.KakaoAuthMapper;
 import plango.auth.domain.entity.SocialAccount;
+import plango.auth.domain.service.JwtTokenProvider;
 import plango.auth.domain.service.KakaoAuthService;
 import plango.auth.domain.service.SocialAccountService;
 import plango.member.domain.entity.Member;
@@ -21,10 +22,9 @@ public class KakaoLoginUseCase {
     private static final String KAKAO_PROVIDER = "KAKAO";
 
     private final KakaoAuthService kakaoAuthService;
-
-    private final MemberService memberService;
-
     private final SocialAccountService socialAccountService;
+    private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public KakaoLoginResponse execute(KakaoLoginRequest request) {
@@ -32,7 +32,6 @@ public class KakaoLoginUseCase {
                 kakaoAuthService.getUserInfoByAuthorizationCode(request.authorizationCode());
 
         Long kakaoId = kakaoUserInfo.id();
-
         String email = kakaoUserInfo.getEmail();
 
         SocialAccount socialAccount =
@@ -43,7 +42,6 @@ public class KakaoLoginUseCase {
                         .orElse(null);
 
         Member member;
-
         boolean isNewMember;
 
         if (socialAccount == null) {
@@ -68,10 +66,17 @@ public class KakaoLoginUseCase {
             isNewMember = true;
         } else {
             member = socialAccount.getMember();
-
             isNewMember = false;
         }
 
-        return KakaoAuthMapper.toKakaoLoginResponse(member, isNewMember);
+        String accessToken = jwtTokenProvider.createAccessToken(member.getId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+
+        return KakaoAuthMapper.toKakaoLoginResponse(
+                member,
+                isNewMember,
+                accessToken,
+                refreshToken
+        );
     }
 }

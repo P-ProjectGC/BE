@@ -55,11 +55,15 @@ security:
   aes:
     key: ${AES_KEY:}
 
+  jwt:
+    secret-key: ${JWT_SECRET_KEY:plango-jwt-secret-key-change-me-please-very-long}
+    access-token-validity-in-seconds: ${JWT_ACCESS_TOKEN_VALIDITY:1800}
+    refresh-token-validity-in-seconds: ${JWT_REFRESH_TOKEN_VALIDITY:1209600}
+
   preview:
     api:
       url: ${PREVIEW_API_URL:http://localhost:3000}
   oauth2:
     kakao:
       client-id: ${KAKAO_CLIENT_ID}
-
       redirect-uri: ${KAKAO_REDIRECT_URI}
