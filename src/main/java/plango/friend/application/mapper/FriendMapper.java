@@ -13,26 +13,27 @@ public class FriendMapper {
     public FriendResponse toFriendResponse(Friend friend) {
         return new FriendResponse(
                 friend.getId(),
-                friend.getRequester().getId(),
-                friend.getReceiver().getId(),
-                friend.getReceiver().getNickname(),
-                friend.getStatus().name()
+                friend.getRequester()
+                        .getId(),
+                friend.getReceiver()
+                        .getId(),
+                friend.getReceiver()
+                        .getNickname(),
+                friend.getStatus()
+                        .name()
         );
     }
 
     public FriendListItemResponse toFriendListItemResponse(Friend friend, Long currentMemberId) {
-        Member opponent = friend.getRequester()
-                .getId()
-                .equals(currentMemberId)
-                ? friend.getReceiver()
-                : friend.getRequester();
+        Member targetMember = getTargetMember(friend, currentMemberId);
 
         return new FriendListItemResponse(
                 friend.getId(),
-                opponent.getId(),
-                opponent.getNickname(),
-                opponent.getProfileImageUrl(),
-                opponent.getLoginType()
+                targetMember.getId(),
+                targetMember.getName(),
+                targetMember.getNickname(),
+                targetMember.getProfileImageUrl(),
+                targetMember.getLoginType()
                         .name()
         );
     }
@@ -59,5 +60,17 @@ public class FriendMapper {
                 receiver.getProfileImageUrl(),
                 friend.getCreatedAt()
         );
+    }
+
+    private Member getTargetMember(Friend friend, Long currentMemberId) {
+        Member requester = friend.getRequester();
+        Member receiver = friend.getReceiver();
+
+        if (requester.getId()
+                .equals(currentMemberId)) {
+            return receiver;
+        }
+
+        return requester;
     }
 }
