@@ -20,8 +20,11 @@ import plango.auth.application.exception.AuthException;
 public class JwtTokenProvider {
 
     private static final String CLAIM_TYPE = "type";
+    private static final String CLAIM_ROLE = "role";
     private static final String TYPE_ACCESS = "ACCESS";
     private static final String TYPE_REFRESH = "REFRESH";
+
+    private static final String ROLE_ADMIN = "ADMIN";
 
     private final Key secretKey;
     private final long accessTokenValidityInMillis;
@@ -56,6 +59,29 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(String.valueOf(memberId))
                 .claim(CLAIM_TYPE, type)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String createAdminAccessToken(Long adminId) {
+        return createTokenWithRole(adminId, TYPE_ACCESS, ROLE_ADMIN, accessTokenValidityInMillis);
+    }
+
+    private String createTokenWithRole(
+            Long id,
+            String type,
+            String role,
+            long validityInMillis
+    ) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + validityInMillis);
+
+        return Jwts.builder()
+                .setSubject(String.valueOf(id))
+                .claim(CLAIM_TYPE, type)
+                .claim(CLAIM_ROLE, role)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
