@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import plango.auth.application.dto.request.KakaoLoginRequest;
 import plango.auth.application.dto.request.MemberLoginRequest;
 import plango.auth.application.dto.request.MemberSignUpRequest;
@@ -109,8 +110,10 @@ public class AuthController {
 
     @Operation(summary = "로그아웃", description = "현재 로그인된 사용자를 로그아웃합니다.")
     @PostMapping("/logout")
-    public ResponseEntity<CommonResponse<Void>> logout() {
-        logoutUseCase.execute();
+    public ResponseEntity<CommonResponse<Void>> logout(
+            @AuthenticationPrincipal Long memberId
+    ) {
+        logoutUseCase.execute(memberId);
 
         return ResponseEntity.ok(
                 CommonResponse.success(ResponseMessage.SUCCESS)
