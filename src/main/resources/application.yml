@@ -28,7 +28,7 @@ server:
 
 cloud:
   aws:
-    region: ${AWS_REGION}
+    region: ${S3_REGION}
 
 s3:
   bucket: ${S3_BUCKET}
