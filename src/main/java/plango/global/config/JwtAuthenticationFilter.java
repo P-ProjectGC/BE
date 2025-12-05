@@ -5,10 +5,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
@@ -32,13 +34,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
-                Long memberId = jwtTokenProvider.getMemberIdFromAccessToken(token);
+                Long id = jwtTokenProvider.getMemberIdFromAccessToken(token);
+                String role = jwtTokenProvider.getRoleFromAccessToken(token);
+
+                List<GrantedAuthority> authorities;
+                if ("ADMIN".equals(role)) {
+                    authorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                } else {
+                    // 일반 유저 토큰(role 없거나 다른 값) → ROLE_USER 부여
+                    authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+                }
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                memberId,
+                                id,
                                 null,
-                                Collections.emptyList()
+                                authorities
                         );
 
                 authentication.setDetails(

@@ -66,6 +66,11 @@ public enum ResponseMessage {
     CHAT_MESSAGE_LIST_GET_SUCCESS(0, "채팅 메시지 목록 조회 성공"),
     CHAT_MESSAGE_HISTORY_BEFORE_GET_SUCCESS(0, "채팅 이전 메시지 목록 조회 성공"),
 
+    // ===== 관리자 =====
+    ADMIN_MEMBER_LIST_GET_SUCCESS(0,"관리자 회원 목록 조회 성공"),
+    ADMIN_MEMBER_DETAIL_GET_SUCCESS(0,"관리자 회원 상세 조회 성공"),
+    ADMIN_MEMBER_UPDATE_SUCCESS(0,"관리자 회원 정보 수정 성공"),
+
     AUTH_TOKEN_REISSUE_SUCCESS(0, "토큰 재발급 성공");
 
     private final int code;
