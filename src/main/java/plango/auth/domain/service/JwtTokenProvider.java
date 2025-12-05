@@ -48,6 +48,11 @@ public class JwtTokenProvider {
         return createToken(memberId, TYPE_REFRESH, refreshTokenValidityInMillis);
     }
 
+    public String getRoleFromAccessToken(String token) {
+        Claims claims = parseAccessTokenClaims(token);
+        return claims.get(CLAIM_ROLE, String.class);   // CLAIM_ROLE = "role"
+    }
+
     private String createToken(
             Long memberId,
             String type,
