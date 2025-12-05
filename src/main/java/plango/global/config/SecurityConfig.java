@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // 🔓 누구나 접근 가능한 경로
                         .requestMatchers(
                                 "/health-check",
                                 "/api/auth/**",
@@ -36,10 +37,16 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/ws/**",
                                 "/uploads/**"
-                        )
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
+                        ).permitAll()
+
+                        // 🔓 관리자 로그인은 인증 없이 허용
+                        .requestMatchers("/api/admin/auth/login").permitAll()
+
+                        // 🔒 나머지 관리자 API는 ADMIN 권한 필요
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // 🔒 그 외 나머지 API는 JWT 인증만 있으면 됨
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
