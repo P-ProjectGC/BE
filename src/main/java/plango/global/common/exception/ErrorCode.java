@@ -22,7 +22,8 @@ public enum ErrorCode {
     ROOM_HOST_ONLY(HttpStatus.FORBIDDEN, "방장만 수행할 수 있는 작업입니다."),
     ROOM_SCHEDULE_NOT_FOUND(HttpStatus.BAD_REQUEST, "일정을 찾을 수 없습니다."),
     ADMIN_NOT_FOUND(HttpStatus.BAD_REQUEST, "관리자를 찾을 수 없습니다."),   // ← int 404
-    INVALID_ADMIN_PASSWORD(HttpStatus.BAD_REQUEST, "관리자 비밀번호가 일치하지 않습니다.");  // ← int 400
+    INVALID_ADMIN_PASSWORD(HttpStatus.BAD_REQUEST, "관리자 비밀번호가 일치하지 않습니다."),
+    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "신고 내역을 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;
