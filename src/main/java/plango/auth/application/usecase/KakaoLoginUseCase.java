@@ -27,8 +27,8 @@ public class KakaoLoginUseCase {
 
     @Transactional
     public KakaoLoginResponse execute(KakaoLoginRequest request) {
-        KakaoUserInfoResponse userInfo = kakaoAuthService.getUserInfoByAuthorizationCode(
-                request.authorizationCode()
+        KakaoUserInfoResponse userInfo = kakaoAuthService.getUserInfoByAccessToken(
+                request.accessToken()
         );
 
         String email = userInfo.getEmail();
@@ -70,3 +70,4 @@ public class KakaoLoginUseCase {
         );
     }
 }
+

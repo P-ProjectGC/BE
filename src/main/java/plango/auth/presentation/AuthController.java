@@ -94,7 +94,10 @@ public class AuthController {
         );
     }
 
-    @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 사용해 로그인합니다.")
+    @Operation(
+            summary = "카카오 로그인",
+            description = "Android 카카오 SDK에서 발급받은 accessToken을 사용해 로그인합니다."
+    )
     @PostMapping("/login/kakao")
     public ResponseEntity<CommonResponse<KakaoLoginResponse>> kakaoLogin(
             @Valid
