@@ -10,59 +10,47 @@ import plango.auth.application.mapper.KakaoAuthMapper;
 import plango.auth.domain.entity.SocialAccount;
 import plango.auth.domain.service.JwtTokenProvider;
 import plango.auth.domain.service.KakaoAuthService;
+import plango.auth.domain.service.RefreshTokenService;
 import plango.auth.domain.service.SocialAccountService;
 import plango.member.domain.entity.Member;
 import plango.member.domain.service.MemberService;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class KakaoLoginUseCase {
-
-    private static final String KAKAO_PROVIDER = "KAKAO";
 
     private final KakaoAuthService kakaoAuthService;
     private final SocialAccountService socialAccountService;
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public KakaoLoginResponse execute(KakaoLoginRequest request) {
-        KakaoUserInfoResponse kakaoUserInfo =
-                kakaoAuthService.getUserInfoByAuthorizationCode(request.authorizationCode());
+        KakaoUserInfoResponse userInfo = kakaoAuthService.getUserInfoByAuthorizationCode(
+                request.authorizationCode()
+        );
 
-        Long kakaoId = kakaoUserInfo.id();
-        String email = kakaoUserInfo.getEmail();
+        String email = userInfo.getEmail();
+        String nickname = userInfo.getNickname();
+        String profileImageUrl = userInfo.getProfileImageUrl();
+        String providerUserId = String.valueOf(userInfo.id());
 
-        SocialAccount socialAccount =
-                socialAccountService.findByProviderAndProviderUserId(
-                                KAKAO_PROVIDER,
-                                kakaoId.toString()
-                        )
-                        .orElse(null);
-
-        Member member;
         boolean isNewMember;
+        Member member;
+
+        SocialAccount socialAccount = socialAccountService
+                .findByProviderAndProviderUserId("KAKAO", providerUserId)
+                .orElse(null);
 
         if (socialAccount == null) {
-            if (email == null || email.isBlank()) {
-                member = memberService.save(
-                        KakaoAuthMapper.toMember(kakaoUserInfo)
-                );
-            } else {
-                member = memberService.findByEmail(email)
-                        .orElseGet(
-                                () -> memberService.save(
-                                        KakaoAuthMapper.toMember(kakaoUserInfo)
-                                )
-                        );
-            }
-
-            socialAccount = socialAccountService.createAndSaveKakaoAccount(
-                    kakaoId.toString(),
-                    member
+            member = Member.createKakaoMember(
+                    email,
+                    nickname,
+                    profileImageUrl
             );
-
+            memberService.save(member);
+            socialAccountService.createAndSaveKakaoAccount(providerUserId, member);
             isNewMember = true;
         } else {
             member = socialAccount.getMember();
@@ -71,6 +59,8 @@ public class KakaoLoginUseCase {
 
         String accessToken = jwtTokenProvider.createAccessToken(member.getId());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+
+        refreshTokenService.saveOrUpdate(member, refreshToken);
 
         return KakaoAuthMapper.toKakaoLoginResponse(
                 member,
