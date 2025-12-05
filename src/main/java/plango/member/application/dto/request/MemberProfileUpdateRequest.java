@@ -2,6 +2,7 @@ package plango.member.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 public record MemberProfileUpdateRequest(
         @NotBlank(message = "닉네임은 필수입니다.")
@@ -9,4 +10,6 @@ public record MemberProfileUpdateRequest(
         String nickname,
         String profileImageUrl
 ) {
+        @Builder
+        public MemberProfileUpdateRequest {}
 }
