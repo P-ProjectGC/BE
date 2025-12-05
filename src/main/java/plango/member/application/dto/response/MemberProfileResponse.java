@@ -4,6 +4,7 @@ import plango.member.domain.entity.LoginType;
 
 public record MemberProfileResponse(
         Long memberId,
+        String name,
         String nickname,
         String email,
         String loginId,
