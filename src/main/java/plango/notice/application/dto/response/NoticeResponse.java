@@ -10,6 +10,7 @@ public record NoticeResponse(
         Long id,
         String title,
         String content,
+        Long adminId,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
