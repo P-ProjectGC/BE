@@ -70,6 +70,9 @@ public enum ResponseMessage {
     ADMIN_MEMBER_LIST_GET_SUCCESS(0,"관리자 회원 목록 조회 성공"),
     ADMIN_MEMBER_DETAIL_GET_SUCCESS(0,"관리자 회원 상세 조회 성공"),
     ADMIN_MEMBER_UPDATE_SUCCESS(0,"관리자 회원 정보 수정 성공"),
+    ADMIN_REPORT_LIST_GET_SUCCESS(0,"관리자 신고 목록 조회 성공"),
+    ADMIN_REPORT_DETAIL_GET_SUCCESS(0,"관리자 신고 상세 조회 성공"),
+    ADMIN_REPORT_STATUS_UPDATE_SUCCESS(0,"관리자 신고 상태 변경 성공"),
 
     AUTH_TOKEN_REISSUE_SUCCESS(0, "토큰 재발급 성공");
 

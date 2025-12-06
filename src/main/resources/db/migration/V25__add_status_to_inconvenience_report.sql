@@ -1,0 +1,2 @@
+ALTER TABLE inconvenience_report
+    ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'WAITING';
