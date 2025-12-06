@@ -74,6 +74,13 @@ public enum ResponseMessage {
     ADMIN_REPORT_DETAIL_GET_SUCCESS(0,"관리자 신고 상세 조회 성공"),
     ADMIN_REPORT_STATUS_UPDATE_SUCCESS(0,"관리자 신고 상태 변경 성공"),
 
+    //===== 공지사항 =====
+    NOTICE_CREATE_SUCCESS(0,"공지사항 생성 성공"),
+    NOTICE_LIST_GET_SUCCESS(0,"공지사항 목록 조회 성공"),
+    NOTICE_DETAIL_GET_SUCCESS(0,"공지사항 상세 조회 성공"),
+    NOTICE_UPDATE_SUCCESS(0,"공지사항 수정 성공"),
+    NOTICE_DELETE_SUCCESS(0,"공지사항 삭제 성공"),
+
     AUTH_TOKEN_REISSUE_SUCCESS(0, "토큰 재발급 성공");
 
     private final int code;
