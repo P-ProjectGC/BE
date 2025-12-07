@@ -2,7 +2,9 @@ package plango.admin.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,17 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 import plango.admin.application.dto.request.AdminMemberUpdateRequest;
 import plango.admin.application.dto.response.AdminMemberDetailResponse;
 import plango.admin.application.dto.response.AdminMemberSummaryResponse;
+import plango.admin.application.usecase.AdminDeleteMemberUseCase;
 import plango.admin.application.usecase.AdminGetMemberDetailUseCase;
 import plango.admin.application.usecase.AdminSearchMembersUseCase;
 import plango.admin.application.usecase.AdminUpdateMemberUseCase;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
 
-import java.util.List;
-
 @Tag(
         name = "관리자 회원 관리",
-        description = "관리자 화면에서 회원을 조회하고 수정하는 API"
+        description = "관리자 화면에서 회원을 조회 · 수정 · 삭제하는 API"
 )
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +36,8 @@ public class AdminMemberController {
     private final AdminGetMemberDetailUseCase adminGetMemberDetailUseCase;
 
     private final AdminUpdateMemberUseCase adminUpdateMemberUseCase;
+
+    private final AdminDeleteMemberUseCase adminDeleteMemberUseCase;
 
     @Operation(
             summary = "회원 목록 조회",
@@ -81,6 +84,21 @@ public class AdminMemberController {
 
         return CommonResponse.success(
                 ResponseMessage.ADMIN_MEMBER_UPDATE_SUCCESS
+        );
+    }
+
+    @Operation(
+            summary = "회원 삭제",
+            description = "관리자가 특정 회원을 삭제합니다. 관련 친구 관계 및 소셜 계정 등 연관 데이터도 함께 정리됩니다."
+    )
+    @DeleteMapping("/{memberId}")
+    public CommonResponse<Void> deleteMember(
+            @PathVariable Long memberId
+    ) {
+        adminDeleteMemberUseCase.execute(memberId);
+
+        return CommonResponse.success(
+                ResponseMessage.ADMIN_MEMBER_DELETE_SUCCESS
         );
     }
 }
