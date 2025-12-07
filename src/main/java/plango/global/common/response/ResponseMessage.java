@@ -73,6 +73,7 @@ public enum ResponseMessage {
     ADMIN_REPORT_LIST_GET_SUCCESS(0,"관리자 신고 목록 조회 성공"),
     ADMIN_REPORT_DETAIL_GET_SUCCESS(0,"관리자 신고 상세 조회 성공"),
     ADMIN_REPORT_STATUS_UPDATE_SUCCESS(0,"관리자 신고 상태 변경 성공"),
+    ADMIN_DASHBOARD_STATS_SUCCESS(0,"관리자 대시보드 통계 조회 성공"),
 
     //===== 공지사항 =====
     NOTICE_CREATE_SUCCESS(0,"공지사항 생성 성공"),
