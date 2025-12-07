@@ -7,6 +7,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import plango.global.common.exception.BusinessException;
@@ -20,15 +23,20 @@ public class EmailVerificationService {
 
     private final Map<String, VerificationInfo> store = new ConcurrentHashMap<>();
 
-    public String createAndSendVerificationCode(String email) {
+    private final JavaMailSender mailSender;
+
+    @Value("${spring.mail.username:no-reply@plango.com}")
+    private String fromAddress;
+
+    public void createAndSendVerificationCode(String email) {
         String code = generateCode();
 
         VerificationInfo info = new VerificationInfo(code, Instant.now());
         store.put(email, info);
 
-        log.info("[EmailVerification] email = {}, code = {}", email, code);
+        sendEmail(email, code);
 
-        return code;
+        log.info("[EmailVerification] email = {}, code = {}", email, code);
     }
 
     public void verifyCode(String email, String code) {
@@ -66,6 +74,23 @@ public class EmailVerificationService {
         int value = ThreadLocalRandom.current().nextInt(0, 1_000_000);
 
         return String.format("%06d", value);
+    }
+
+    private void sendEmail(String email, String code) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("[PlanGo] 아이디 찾기 인증번호 안내");
+        message.setText(buildEmailBody(code));
+        message.setFrom(fromAddress);
+
+        mailSender.send(message);
+    }
+
+    private String buildEmailBody(String code) {
+        return "안녕하세요, PlanGo 입니다.\n\n"
+                + "아이디 찾기를 위한 인증번호는 다음과 같습니다.\n\n"
+                + "인증번호: " + code + "\n\n"
+                + "본 메일은 발신 전용 메일입니다.";
     }
 
     public String maskEmail(String email) {

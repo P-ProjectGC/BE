@@ -24,13 +24,12 @@ public class SendLoginIdVerificationCodeUseCase {
         Member member = memberService.findByEmail(request.email())
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        String code = emailVerificationService.createAndSendVerificationCode(member.getEmail());
+        emailVerificationService.createAndSendVerificationCode(member.getEmail());
         String maskedEmail = emailVerificationService.maskEmail(member.getEmail());
 
         return SendLoginIdVerificationCodeResponse.of(
                 member.getEmail(),
-                maskedEmail,
-                code
+                maskedEmail
         );
     }
 }
