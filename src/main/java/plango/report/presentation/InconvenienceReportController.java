@@ -3,6 +3,7 @@ package plango.report.presentation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import plango.global.common.response.CommonResponse;
 import plango.global.common.response.ResponseMessage;
@@ -20,7 +21,7 @@ public class InconvenienceReportController {
     @PostMapping("/inconvenience")
     //@Operation(summary = "불편사항 신고", description = "프로필 화면에서 불편사항을 신고합니다.")
     public ResponseEntity<CommonResponse<InconvenienceReportSaveResponse>> reportInconvenience(
-            @RequestHeader("X-MEMBER-ID") Long memberId,
+            @AuthenticationPrincipal Long memberId,
             @Valid @RequestBody InconvenienceReportSaveRequest request
     ) {
         InconvenienceReportSaveResponse response =
