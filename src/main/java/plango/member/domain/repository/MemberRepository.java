@@ -24,6 +24,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             String nickname
     );
 
+
+    long count();
+
+    long countByCreatedAtBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
+
     boolean existsByLoginId(String loginId);
 
     boolean existsByEmail(String email);

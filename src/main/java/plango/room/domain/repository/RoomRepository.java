@@ -6,9 +6,26 @@ import org.springframework.data.repository.query.Param;
 import plango.room.domain.entity.Room;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
+
+    // 전체 여행방 개수 조회
+    long count();
+
+    // 특정 기간 동안 생성된 여행방 수 조회
+    @Query("""
+        select count(r)
+        from Room r
+        where r.createdAt between :start and :end
+        """)
+    long countCreatedAtBetween(
+            @Param("start") LocalDate start,
+            @Param("end") LocalDate end
+    );
+
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     // 특정 시작일 기준으로 여행방 조회 (기존 메서드 유지)
     List<Room> findByStartDate(LocalDate startDate);
