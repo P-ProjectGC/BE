@@ -190,7 +190,7 @@ public class AuthController {
 
     @Operation(
             summary = "아이디 찾기 추가 인증번호 발송",
-            description = "아이디를 찾기 위해 입력한 이메일로 6자리 인증번호를 전송합니다. 테스트 편의를 위해 응답에 인증번호가 함께 포함됩니다."
+            description = "아이디를 찾기 위해 입력한 이메일로 6자리 인증번호를 전송합니다."
     )
     @PostMapping("/find-id/send-code")
     public ResponseEntity<CommonResponse<SendLoginIdVerificationCodeResponse>> sendFindIdCode(
