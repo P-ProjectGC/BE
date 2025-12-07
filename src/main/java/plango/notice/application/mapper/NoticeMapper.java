@@ -1,11 +1,10 @@
 package plango.notice.application.mapper;
 
+import java.util.List;
 import plango.notice.application.dto.request.NoticeCreateRequest;
 import plango.notice.application.dto.response.NoticeListResponse;
 import plango.notice.application.dto.response.NoticeResponse;
 import plango.notice.domain.entity.Notice;
-
-import java.util.List;
 
 public class NoticeMapper {
 
@@ -14,6 +13,7 @@ public class NoticeMapper {
                 .title(request.title())
                 .content(request.content())
                 .adminId(adminId)
+                .type(request.type())
                 .build();
     }
 
@@ -23,6 +23,7 @@ public class NoticeMapper {
                 .title(notice.getTitle())
                 .content(notice.getContent())
                 .adminId(notice.getAdminId())
+                .type(notice.getType())
                 .createdAt(notice.getCreatedAt())
                 .updatedAt(notice.getUpdatedAt())
                 .build();
@@ -32,6 +33,7 @@ public class NoticeMapper {
         return NoticeListResponse.builder()
                 .id(notice.getId())
                 .title(notice.getTitle())
+                .type(notice.getType())
                 .createdAt(notice.getCreatedAt())
                 .build();
     }

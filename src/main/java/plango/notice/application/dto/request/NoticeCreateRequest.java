@@ -2,6 +2,7 @@ package plango.notice.application.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+import plango.notice.domain.entity.NoticeType;
 
 @Schema(description = "공지사항 생성 요청")
 public record NoticeCreateRequest(
@@ -9,8 +10,16 @@ public record NoticeCreateRequest(
         String title,
 
         @Schema(description = "공지 내용", example = "금일 23시부터 서버 점검이 진행됩니다.")
-        String content
+        String content,
+
+        @Schema(
+                description = "공지 타입",
+                example = "UPDATE",
+                allowableValues = {"ERROR", "UPDATE", "EMERGENCY"}
+        )
+        NoticeType type
 ) {
     @Builder
-    public NoticeCreateRequest { }
+    public NoticeCreateRequest {
+    }
 }
