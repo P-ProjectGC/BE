@@ -17,7 +17,8 @@ public class AdminUpdateNoticeUseCase {
         noticeService.update(
                 noticeId,
                 request.title(),
-                request.content()
+                request.content(),
+                request.type()
         );
     }
 }
