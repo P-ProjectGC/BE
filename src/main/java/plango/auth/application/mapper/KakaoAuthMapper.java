@@ -14,17 +14,18 @@ public class KakaoAuthMapper {
         String uuid = UUID.randomUUID()
                 .toString()
                 .replace("-", "");
-
         return "KAKAO_TMP_" + uuid.substring(0, 12);
     }
 
     public static Member toMember(KakaoUserInfoResponse kakaoUserInfo) {
         String email = kakaoUserInfo.getEmail();
+        String name = kakaoUserInfo.getNickname();
         String profileImageUrl = kakaoUserInfo.getProfileImageUrl();
         String tempNickname = createTempNickname();
 
         return Member.createKakaoMember(
                 email,
+                name,
                 tempNickname,
                 profileImageUrl
         );

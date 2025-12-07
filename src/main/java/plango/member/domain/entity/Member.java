@@ -45,12 +45,13 @@ public class Member extends BaseTimeEntity {
 
     public static Member createKakaoMember(
             String email,
+            String name,
             String nickname,
             String profileImageUrl
     ) {
         Member member = new Member();
         member.email = email;
-        member.name = nickname;
+        member.name = name;
         member.nickname = nickname;
         member.profileImageUrl = profileImageUrl;
         member.loginType = LoginType.KAKAO;
