@@ -19,6 +19,8 @@ import plango.member.domain.service.MemberService;
 @RequiredArgsConstructor
 public class KakaoLoginUseCase {
 
+    private static final String KAKAO_TEMP_NICKNAME_PREFIX = "KAKAO_TMP_";
+
     private final KakaoAuthService kakaoAuthService;
     private final SocialAccountService socialAccountService;
     private final MemberService memberService;
@@ -31,12 +33,8 @@ public class KakaoLoginUseCase {
                 request.accessToken()
         );
 
-        String email = userInfo.getEmail();
-        String nickname = userInfo.getNickname();
-        String profileImageUrl = userInfo.getProfileImageUrl();
         String providerUserId = String.valueOf(userInfo.id());
 
-        boolean isNewMember;
         Member member;
 
         SocialAccount socialAccount = socialAccountService
@@ -44,18 +42,17 @@ public class KakaoLoginUseCase {
                 .orElse(null);
 
         if (socialAccount == null) {
-            member = Member.createKakaoMember(
-                    email,
-                    nickname,
-                    profileImageUrl
-            );
+            member = KakaoAuthMapper.toMember(userInfo);
             memberService.save(member);
             socialAccountService.createAndSaveKakaoAccount(providerUserId, member);
-            isNewMember = true;
         } else {
             member = socialAccount.getMember();
-            isNewMember = false;
         }
+
+        String memberNickname = member.getNickname();
+
+        boolean isNewMember = memberNickname == null
+                || memberNickname.startsWith(KAKAO_TEMP_NICKNAME_PREFIX);
 
         String accessToken = jwtTokenProvider.createAccessToken(member.getId());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
@@ -70,4 +67,3 @@ public class KakaoLoginUseCase {
         );
     }
 }
-
