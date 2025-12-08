@@ -14,17 +14,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     // 전체 여행방 개수 조회
     long count();
 
-    // 특정 기간 동안 생성된 여행방 수 조회
-    @Query("""
-        select count(r)
-        from Room r
-        where r.createdAt between :start and :end
-        """)
-    long countCreatedAtBetween(
-            @Param("start") LocalDate start,
-            @Param("end") LocalDate end
-    );
-
+    // 오늘 생성된 여행방 수 조회 등에 사용하는 메서드
+    // createdAt (LocalDateTime) 기준으로 카운트
     long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     // 특정 시작일 기준으로 여행방 조회 (기존 메서드 유지)
@@ -60,4 +51,29 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("memberId") Long memberId,
             @Param("keyword") String keyword
     );
+
+    // 연/월별 여행방 수 (필요하면 사용)
+    @Query("""
+        select count(r)
+        from Room r
+        where year(r.createdAt) = :year
+          and month(r.createdAt) = :month
+        """)
+    long countByYearAndMonth(@Param("year") int year, @Param("month") int month);
+
+    // 대시보드: 월별 여행방 수 통계용 프로젝션
+    interface MonthlyRoomStats {
+        String getYearMonth();
+        Long getTotalRoomCount();
+    }
+
+    // 대시보드: 월별 여행방 수 통계 조회
+    @Query(value = """
+        select DATE_FORMAT(r.created_at, '%Y-%m') as yearMonth,
+               count(r.id) as totalRoomCount
+        from room r
+        group by DATE_FORMAT(r.created_at, '%Y-%m')
+        order by DATE_FORMAT(r.created_at, '%Y-%m')
+        """, nativeQuery = true)
+    List<MonthlyRoomStats> countMonthlyRooms();
 }
