@@ -1,6 +1,6 @@
 package plango.admin.application.dto.response;
 
-public record AdminMonitoringStatsResponse(
+public record AdminMonitoringStatusResponse(
         long totalMemberCount,
         long totalRoomCount,
         long totalTripCount,
